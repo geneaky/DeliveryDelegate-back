@@ -14,6 +14,27 @@ const gameSocketNameSpace = io.of('/games');
 gameSocketNameSpace.on('connection', (socket) => {
 
     try{
+
+        //jackson test용 order event
+        socket.on('order_test',async () => {
+
+            let order = [
+                {
+                    store_name: '가게1',
+                    mapx: '123',
+                    mapy: '35',
+                    detail: '당당치킨 반반 무 많이'
+                },
+                {
+                    store_name: '가게2',
+                    mapx: '124',
+                    mapy: '36',
+                    detail: '버거킹 스태커4 패티 4개빼고'
+                }
+            ]
+
+            socket?.emit('order_test', order)
+        })
         //게임 방장 생성 후 참가
         socket.on('attendMaster', async (message) => {
             let {room_name} = JSON.parse(message);
@@ -222,7 +243,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
                 let result = [];
 
-                for(let order in orders) {
+                for(let order of orders) {
                     result.push({
                         store_name: order?.store_name,
                         mapx: order?.mapx,
