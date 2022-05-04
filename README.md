@@ -34,3 +34,7 @@
 
 ## System
 ![image](https://user-images.githubusercontent.com/50348197/166203146-412782ac-09fa-4871-8bae-a9e7c7eb906c.png)
+
+***
+### ERD
+https://www.erdcloud.com/d/hyRv9XbeEQ3WyTNv6
