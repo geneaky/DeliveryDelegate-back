@@ -1,34 +1,31 @@
-/* u사용자 데이터를 불러오는 파일 */
-var express = require('express');
-const { render } = require('../app');
-var router = express.Router();
+/* 사용자 데이터를 불러오는 파일 */
+const express = require('express');
+const router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  const title = '달대표의 시작'
-  //res.send('respond with a resource');
-  res.render('index',{title:title});
-});
 
-router.post('/register', function(req, res) {
+
+router.post('/user/register', function(req, res) {
   res.send('회원가입');
 });
 
-router.get('/register', function(req, res) {
-  res.send('register page');
+
+router.get('/user/search/:id', function(req, res) {
+  res.send('최근검색어 5개 조회');  // 검색은 post 아닌지...????????
 });
-router.get('/main', function(req, res) {
-  res.send('달대표 구하는 게시글 전부 표시');
+router.post('/user/search/:id', function(req, res) {
+  res.send('검색'); 
 });
 
-router.get('/search', function(req, res) {
-  res.send('최근검색어 5개');  // 검색은 post 아닌지...????????
-});
 
-router.get('/info/:id', function(req, res) {
+router.get('/user/info/:id', function(req, res) {
   const myid = req.params.id
   res.send('myinfofo');
 });
 
+
+router.get('/user/info/:id/detail', function(req, res) {
+  const myid = req.params.id
+  res.send('내가 작성한 게시글 목록, 리뷰 목록 표시');
+});
 
 module.exports = router;
