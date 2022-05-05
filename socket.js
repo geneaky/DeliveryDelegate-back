@@ -1,3 +1,4 @@
+/* socket 관련 코드, 수정중 */
 const app = require('express')();
 const SocketIO = require("socket.io");
 const server = require('http').createServer(app);
