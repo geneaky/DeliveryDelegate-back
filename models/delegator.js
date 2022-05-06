@@ -8,15 +8,15 @@ module.exports = class Delegator extends Sequelize.Model {
                 primaryKey: true, 
                 autoIncrement: true
                 },
-
+            /*
             game_id:{
                 type: DataTypes.INTEGER, 
                 primaryKey: true, 
                 autoIncrement: true
             },
-            /* user_id : 외래키로 받아옴 */
+             user_id : 외래키로 받아옴 */
             ranking: {
-                type: DataTypes.INTEGER.UNSIGNED,
+                type: DataTypes.INTEGER, 
                 allowNull: false,
                 },
             },

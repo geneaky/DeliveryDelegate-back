@@ -43,5 +43,5 @@ module.exports = class Store extends Sequelize.Model {
   static associate(db) {
     //hasMany : 현재 모델의 정보가 다른 모델로 들어갈 때
     db.Store.hasMany(db.Review,{foreignKey:'store_id',sourceKey:'store_id'});
-}
+    }
 };

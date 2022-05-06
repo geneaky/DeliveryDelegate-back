@@ -10,7 +10,7 @@ module.exports = class User extends Sequelize.Model {
             },
         phone_number: { // 주민번호 대신 본인확인용으로 전화번호
             type: DataTypes.STRING(20),
-            allowNull: true,
+            allowNull: false,
             unique: true,
         },
         name: {  // 사용자 이름
@@ -28,11 +28,11 @@ module.exports = class User extends Sequelize.Model {
         },
         self_xpos: {  //현재 위치 x값
             type: DataTypes.STRING(20),
-            allowNull: false,
+            allowNull: true,
         },
         self_ypos: {  //현재 위치 y값
             type: DataTypes.STRING(20),
-            allowNull: false,
+            allowNull: true,
         },
     }, {
       sequelize,

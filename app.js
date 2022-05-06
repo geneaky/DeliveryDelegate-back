@@ -3,6 +3,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const { sequelize } = require('./models');
+const { User } = require('./models');
 const usersRouter = require('./routes/users');
 const indexRouter = require('./routes/index');
 const reviewRouter = require('./routes/review');
@@ -17,6 +19,18 @@ app.set('port',process.env.PORT || 8080);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+// sequelize 연결
+sequelize.sync({ force: false })
+  .then(() => {
+    console.log('데이터베이스 연결 성공');
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
+
+  
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -47,9 +61,10 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+ 
 app.listen(app.get('port'),() => {
   console.log(app.get('port'),'번 포트에서 서버 실행중');
-});
+}); 
 
 
 module.exports = app;
@@ -62,4 +77,4 @@ const websocket = require('./socket.js'); // socket연결
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
-*/
+*/  
