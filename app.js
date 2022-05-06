@@ -2,12 +2,20 @@ const createError = require('http-errors');
 const express = require('express');
 const logger = require('morgan');
 const dotenv = require('dotenv');
+const {sequelize} = require('./models');
 const usersRouter = require('./api/routes/users');
-const indexRouter = require('./api/routes/index');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
 
 dotenv.config();
+sequelize.sync({force:false})
+    .then(() => {
+      console.log('success connecting database');
+    })
+    .catch((err) => {
+      console.log('fail connecting database');
+    });
+
 const app = express();
 
 app.use(logger('dev'));
