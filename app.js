@@ -1,65 +1,32 @@
 const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const usersRouter = require('./routes/users');
-const indexRouter = require('./routes/index');
-const reviewRouter = require('./routes/review');
-const storeRouter = require('./routes/store');
+const dotenv = require('dotenv');
+const usersRouter = require('./api/routes/users');
+const indexRouter = require('./api/routes/index');
+const reviewRouter = require('./api/routes/review');
+const storeRouter = require('./api/routes/store');
 
-var app = express();
-
-// port set
-app.set('port',process.env.PORT || 8080);
-
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+dotenv.config();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// router 나중에 '/' -> '/@@'로 수정 예정
-app.use('/', indexRouter); //  /...
-app.use('/', usersRouter); //  /user/...
-app.use('/', storeRouter); //  /store/...
-app.use('/', reviewRouter); // /review/...
+app.use('/user', usersRouter);
+app.use('/store', storeRouter);
+app.use('/review', reviewRouter);
 
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.use((err, req, res, next) => {
+  console.log(err.message);
+  res.send('Error');
 });
 
-app.listen(app.get('port'),() => {
-  console.log(app.get('port'),'번 포트에서 서버 실행중');
+app.listen(process.env.DEVELOPMENT_PORT || 8080,() => {
+  console.log('Server Start');
 });
-
-
-module.exports = app;
-
-
-/* socket.io 관련 코드  (수정중)
-const websocket = require('./socket.js'); // socket연결
-
-
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-
-*/
