@@ -1,16 +1,16 @@
-/* 사용자 데이터를 불러오는 파일 */
 const express = require('express');
 const router = express.Router();
+const {registerUser} = require('../../services/user_service');
 
 
 
-router.post('/user/register', function(req, res) {
-  res.send('회원가입');
+router.post('/user/register', (req, res,next) => {
+  registerUser(req, res, next);
 });
 
 
 router.get('/user/search/:id', function(req, res) {
-  res.send('최근검색어 5개 조회');  // 검색은 post 아닌지...????????
+  res.send('최근검색어 5개 조회');
 });
 
 module.exports = router;

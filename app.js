@@ -3,11 +3,12 @@ const express = require('express');
 const logger = require('morgan');
 const dotenv = require('dotenv');
 const {sequelize} = require('./models');
-const usersRouter = require('./api/routes/users');
-const reviewRouter = require('./api/routes/review');
-const storeRouter = require('./api/routes/store');
+const UserRouter = require('./api/routes/users');
+const ReviewRouter = require('./api/routes/review');
+const StoreRouter = require('./api/routes/store');
 
 dotenv.config();
+
 sequelize.sync({force:false})
     .then(() => {
       console.log('success connecting database');
@@ -22,13 +23,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/user', usersRouter);
-app.use('/store', storeRouter);
-app.use('/review', reviewRouter);
-
-app.use((req, res, next) => {
-  next(createError(404));
-});
+app.use('/users', UserRouter);
+app.use('/store', StoreRouter);
+app.use('/review', ReviewRouter);
 
 app.use((err, req, res, next) => {
   console.log(err.message);
