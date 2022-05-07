@@ -1,16 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const {registerUser} = require('../../services/user_service');
+const userService = require('../../services/user_service');
 
 
 
-router.post('/user/register', (req, res,next) => {
-  registerUser(req, res, next);
+router.post('/register', (req, res,next) => {
+  userService.registerUser(req, res, next);
 });
 
-
-router.get('/user/search/:id', function(req, res) {
-  res.send('최근검색어 5개 조회');
-});
+router.post('/login', (req, res, next) => {
+  userService.login(req, res, next);
+})
 
 module.exports = router;
