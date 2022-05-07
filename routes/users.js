@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get('/user/register', async function(req, res, next) {
   try{
+    //안됨
     const user = await User.create({
       phone_number : '010',
       name : 'yujini',

@@ -8,18 +8,18 @@ module.exports = class Game extends Sequelize.Model {
             primaryKey: true, 
             autoIncrement: true
             },
-        game_type: { // 게임방 타입
+        game_type: { // 게임방 타입?
             type: DataTypes.STRING(20),
-            allowNull: true,
+            allowNull: false,
         },
         game_name: { // 게임방 이름
             type: DataTypes.STRING(20),
             allowNull: true,
-            unique: true,
+            unique: false,
         },
         population: { // 인원??
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: true,
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
         land_xpos: {  // 랜드마크 x값
             type: DataTypes.STRING(20),

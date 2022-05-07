@@ -13,7 +13,8 @@ module.exports = class Review extends Sequelize.Model {
                 store_id : (외래키)가게 정보 */
 
             content:{  // 리뷰 내용
-                type:DataTypes.TEXT,
+                // type:DataTypes.TEXT, mysql 작동 안됨
+                type:DataTypes.STRING(1000),
                 allowNull:false,
             },
             created_at:{  // 리뷰 작성 시간
