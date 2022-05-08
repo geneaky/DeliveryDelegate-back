@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const User = require('./user'); 
-const UUser = require('./user'); 
-const Like = require('./like'); 
+const Thumb = require('./thumb'); 
 const Store = require('./store'); 
 const Game = require('./game'); 
 const Review = require('./review'); 
@@ -17,27 +16,26 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 db.sequelize = sequelize;
 
 
-
-
 db.User = User;
 db.Store = Store;
 db.Review = Review;
-db.Like = Like;
+db.Thumb = Thumb;
 db.Delegator = Delegator;
 db.Game = Game;
 
-// (async () => {
-//     await sequelize.sync();   // call the sync before creating
-//     const test = await User.create({
-//       phone_number : '010',
-//       name : 'yujini',
-//       id : '00',
-//       password : 'passwwww',
-//       self_xpos : '127.12',
-//       self_ypos : '37' 
-//     });
-//     console.log(jane.toJSON());
-//   })();
+User.init(sequelize);
+Store.init(sequelize);
+Review.init(sequelize);
+Delegator.init(sequelize);
+Thumb.init(sequelize);
+Game.init(sequelize);
+
+User.associate(db);
+Store.associate(db);
+Review.associate(db);
+Delegator.associate(db);
+Game.associate(db);
+Thumb.associate(db);
 
 
 module.exports = db;

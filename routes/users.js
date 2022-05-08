@@ -9,10 +9,10 @@ const router = express.Router();
 router.get('/user/register', async function(req, res, next) {
   try{
     //안됨
+    console.log("등장");
     const user = await User.create({
       phone_number : '010',
-      name : 'yujini',
-      id : '00',
+      name : "dddd",
       password : 'passwwww',
       self_xpos : '127.12',
       self_ypos : '37' 

@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const DataTypes = Sequelize.DataTypes;
 
 module.exports = class User extends Sequelize.Model {
   static init(sequelize) {
@@ -13,26 +14,17 @@ module.exports = class User extends Sequelize.Model {
             allowNull: false,
             unique: true,
         },
-        name: {  // 사용자 이름
-            type: DataTypes.STRING(40),
-            allowNull: false,
-        },
-        id: {  // ?? 일단 만들
-            type: DataTypes.STRING(40),
-            allowNull: false,
-            unique: true,
-        },
         password: {  // 비밀번호
             type: DataTypes.STRING(40),
             allowNull: false,
         },
         self_xpos: {  //현재 위치 x값
             type: DataTypes.STRING(20),
-            allowNull: true,
+            allowNull: false,
         },
         self_ypos: {  //현재 위치 y값
-            type: DataTypes.STRING(20),
-            allowNull: true,
+            type: DataTypes.STRING(10),
+            allowNull: false,
         },
     }, {
       sequelize,
@@ -48,6 +40,8 @@ module.exports = class User extends Sequelize.Model {
   //관계설정 1:N = User : Delegator
   static associate(db) {
     //hasMany : 현재 모델의 정보가 다른 모델로 들어갈 때
-    db.User.hasMany(db.Delegator,{foreignKey:'user_id',sourceKey:'user_id'});
+    db.User.hasMany(db.Delegator,{foreignKey:'d_user_id',sourceKey:'user_id'});
+    db.User.hasMany(db.Review,{foreignKey:'user_id',sourceKey:'user_id'});
+    db.User.hasMany(db.Thumb,{foreignKey:'thumb_user_id',sourceKey:'user_id'});
 }
 };

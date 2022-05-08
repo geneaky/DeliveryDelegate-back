@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const DataTypes = Sequelize.DataTypes;
 
 module.exports = class Game extends Sequelize.Model {
   static init(sequelize) {
@@ -21,11 +22,11 @@ module.exports = class Game extends Sequelize.Model {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        land_xpos: {  // 랜드마크 x값
+        landmark_xpos: {  // 랜드마크 x값
             type: DataTypes.STRING(20),
             allowNull: false,
         },
-        land_ypos: {  // 랜드마크 y값
+        landmark_ypos: {  // 랜드마크 y값
             type: DataTypes.STRING(20),
             allowNull: false,
         },
