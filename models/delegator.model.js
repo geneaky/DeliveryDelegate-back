@@ -9,11 +9,11 @@ module.exports = class Delegator extends Sequelize.Model {
                 primaryKey: true, 
                 autoIncrement: true
                 },
-            d_game_id:{  //(외래키)게임아이디
+            delegator_game_id:{  //(외래키)게임아이디
                 type: DataTypes.INTEGER, 
                 primaryKey: true, 
             },
-            d_user_id :{ //(외래키) 사용자아이디
+            delegator_user_id :{ //(외래키) 사용자아이디
                 type: DataTypes.INTEGER, 
                 primaryKey: true, 
             },
@@ -35,8 +35,7 @@ module.exports = class Delegator extends Sequelize.Model {
     //관계설정 1:N = User : Delegator
     //관계설정 1:N = Game : Delegator
     static associate(db){
-        //belongsTo:현재 모델에서 다른 모델의 정보를 받아올 때 == 다른 모델의 정보가 들어갈 때
-        db.Delegator.belongsTo(db.User,{foreignKey:'d_user_id',targetKey:'user_id'});
-        db.Delegator.belongsTo(db.Game,{foreignKey:'d_game_id',targetKey:'game_id'});
+        db.Delegator.belongsTo(db.User,{foreignKey:'delegator_user_id',targetKey:'user_id'});
+        db.Delegator.belongsTo(db.Game,{foreignKey:'delegator_game_id',targetKey:'game_id'});
     }
 }

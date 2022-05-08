@@ -41,9 +41,9 @@ module.exports = class Store extends Sequelize.Model {
     });
   }
   //관계설정 1:N = Store : Review
+  //관계설정 N:M = Store : User
   static associate(db) {
-    //hasMany : 현재 모델의 정보가 다른 모델로 들어갈 때
-    db.Store.hasMany(db.Review,{foreignKey:'store_id',sourceKey:'store_id'});
-    
+    db.Store.hasMany(db.Review,{foreignKey:'review_store_id',sourceKey:'store_id'});
+    db.Store.belongsToMany(db.User, {through: 'reciept', foreignKey: 'store_id', otherKey: 'reciept_store_id'});
     }
 };

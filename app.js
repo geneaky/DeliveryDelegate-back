@@ -4,11 +4,10 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { sequelize } = require('./models');
-const { User } = require('./models');
-const usersRouter = require('./routes/users');
-const indexRouter = require('./routes/index');
-const reviewRouter = require('./routes/review');
-const storeRouter = require('./routes/store');
+const usersRouter = require('./api/routes/users');
+const indexRouter = require('./api/routes/index');
+const reviewRouter = require('./api/routes/review');
+const storeRouter = require('./api/routes/store');
 
 var app = express();
 
@@ -16,9 +15,6 @@ var app = express();
 app.set('port',process.env.PORT || 8080);
 
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
 // sequelize 연결
 sequelize.sync({ force: false })
@@ -36,11 +32,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// router 나중에 '/' -> '/@@'로 수정 예정
-app.use('/', indexRouter); //  /...
-app.use('/', usersRouter); //  /user/...
-app.use('/', storeRouter); //  /store/...
-app.use('/', reviewRouter); // /review/...
+// router
+app.use('/user', usersRouter); //  /user/...
+app.use('/store', storeRouter); //  /store/...
+app.use('/review', reviewRouter); // /review/...
 
 
 // catch 404 and forward to error handler

@@ -43,7 +43,6 @@ module.exports = class Game extends Sequelize.Model {
   }
   //관계설정 1:N = Game : Delegator
   static associate(db) {
-    //hasMany : 현재 모델의 정보가 다른 모델로 들어갈 때
-    db.Game.hasMany(db.Delegator,{foreignKey:'game_id',sourceKey:'game_id'});
+    db.Game.hasMany(db.Delegator,{foreignKey:'delegator_game_id',sourceKey:'game_id'});
 }
 };

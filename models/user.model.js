@@ -38,10 +38,13 @@ module.exports = class User extends Sequelize.Model {
     });
   }
   //관계설정 1:N = User : Delegator
+  //관계설정 1:N = User : Review
+  //관계설정 1:N = User : Thumb
+  //관계설정 N:M = Store : User
   static associate(db) {
-    //hasMany : 현재 모델의 정보가 다른 모델로 들어갈 때
-    db.User.hasMany(db.Delegator,{foreignKey:'d_user_id',sourceKey:'user_id'});
-    db.User.hasMany(db.Review,{foreignKey:'user_id',sourceKey:'user_id'});
+    db.User.hasMany(db.Delegator,{foreignKey:'delegator_user_id',sourceKey:'user_id'});
+    db.User.hasMany(db.Review,{foreignKey:'review_user_id',sourceKey:'user_id'});
     db.User.hasMany(db.Thumb,{foreignKey:'thumb_user_id',sourceKey:'user_id'});
+    db.User.belongsToMany(db.Store, {through: 'reciept', foreignKey: 'user_id', otherKey: 'reciept_user_id'});
 }
 };

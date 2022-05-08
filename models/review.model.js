@@ -9,17 +9,16 @@ module.exports = class Review extends Sequelize.Model {
                 primaryKey: true, 
                 autoIncrement: true
                 },
-            user_id : {  // (외래키)리뷰 작성자 
+            review_user_id : {  // (외래키)리뷰 작성자 
                 type: DataTypes.INTEGER, 
                 primaryKey: true, 
             },
-            store_id : {  // (외래키)가게 정보
+            review_store_id : {  // (외래키)가게 정보
                 type: DataTypes.INTEGER, 
                 primaryKey: true, 
             },
             content:{  // 리뷰 내용
-                // type:DataTypes.TEXT, mysql 작동 안됨
-                type:DataTypes.STRING(1000),
+                type:DataTypes.TEXT,
                 allowNull:false,
             },
             /*created_at:{  // 리뷰 작성 시간
@@ -41,9 +40,8 @@ module.exports = class Review extends Sequelize.Model {
     //관계설정 1:N = User : Review
     //관계설정 1:N = Review : Thumb
     static associate(db){
-        //belongsTo:현재 모델에서 다른 모델의 정보를 받아올 때 == 다른 모델의 정보가 들어갈 때
-        db.Review.belongsTo(db.User, {foreignKey:'user_id',targetKey:'user_id'});
-        db.Review.belongsTo(db.Store, {foreignKey:'store_id',targetKey:'store_id'});
+        db.Review.belongsTo(db.User, {foreignKey:'review_user_id',targetKey:'user_id'});
+        db.Review.belongsTo(db.Store, {foreignKey:'review_store_id',targetKey:'store_id'});
         db.Review.hasMany(db.Thumb, {foreignKey:'thumb_review_id',sourceKey:'review_id'});
     }
 }

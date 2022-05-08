@@ -18,11 +18,11 @@ module.exports = class Thumb extends Sequelize.Model {
                 primaryKey: true, 
             },
             thumb_up:{
-                type: DataTypes.INTEGER, //원래는 TINYINT
+                type: DataTypes.TINYINT, //mysql 불린
                 allowNull: false,
             },
             thumb_down:{
-                type: DataTypes.INTEGER, //원래는 TINYINT
+                type: DataTypes.TINYINT, //mysql 불린
                 allowNull: false,
             },
             
@@ -39,7 +39,6 @@ module.exports = class Thumb extends Sequelize.Model {
     //관계설정 1:N = Store : Review
     //관계설정 1:N = User : Review
     static associate(db){
-        //belongsTo:현재 모델에서 다른 모델의 정보를 받아올 때 == 다른 모델의 정보가 들어갈 때
         db.Thumb.belongsTo(db.User,{foreignKey:'thumb_user_id',targetKey:'user_id'});
         db.Thumb.belongsTo(db.Review,{foreignKey:'thumb_review_id',targetKey:'review_id'});
     }

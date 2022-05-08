@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* (삭제XX, 건들XX) express 서버로 활용하기 위한 필수적인 파일 */
+
 /**
  * Module dependencies.
  */

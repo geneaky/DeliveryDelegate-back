@@ -1,10 +1,10 @@
 const Sequelize = require('sequelize');
-const User = require('./user'); 
-const Thumb = require('./thumb'); 
-const Store = require('./store'); 
-const Game = require('./game'); 
-const Review = require('./review'); 
-const Delegator = require('./delegator'); 
+const User = require('./user.model'); 
+const Thumb = require('./thumb.model'); 
+const Store = require('./store.model'); 
+const Game = require('./game.model'); 
+const Review = require('./review.model'); 
+const Delegator = require('./delegator.model'); 
 
 
 const env = process.env.NODE_ENV || 'development';
