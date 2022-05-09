@@ -1,4 +1,5 @@
 const httpError = require('http-errors');
+const jwt = require('../api/middlewares/jwt');
 const {User} = require('../models');
 const crypto = require('crypto');
 
@@ -40,8 +41,10 @@ const login = async (req, res, next) => {
     let authenticatedUser = await findUser(req, res, next);
     console.log(authenticatedUser);
     if(authenticatedUser) {
+        const jwtToken = jwt.sign(user);
         return res.status(200).json({
-            user: authenticatedUser
+            user: authenticatedUser,
+            token: jwtToken
         });
     }
 

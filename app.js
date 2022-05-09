@@ -1,6 +1,7 @@
 const express = require('express');
 const logger = require('morgan');
 const dotenv = require('dotenv');
+const authenticate = require('./api/middlewares/auth');
 const {sequelize} = require('./models');
 const usersRouter = require('./api/routes/users');
 const reviewRouter = require('./api/routes/review');
@@ -19,11 +20,11 @@ const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
 
-app.use('/users', usersRouter);
-app.use('/store', storeRouter);
-app.use('/review', reviewRouter);
+app.use('/users',authenticate, usersRouter);
+app.use('/store',authenticate, storeRouter);
+app.use('/review',authenticate, reviewRouter);
 
 app.use((err, req, res, next) => {
   console.log(err.message);
