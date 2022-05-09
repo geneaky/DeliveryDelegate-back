@@ -22,7 +22,7 @@ app.use(logger('dev'));
 app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 
-app.use('/users',authenticate, usersRouter);
+app.use('/users', usersRouter);
 app.use('/store',authenticate, storeRouter);
 app.use('/review',authenticate, reviewRouter);
 

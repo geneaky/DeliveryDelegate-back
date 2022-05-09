@@ -4,7 +4,7 @@ const TOKEN_EXPIRED = -3;
 const TOKEN_INVALID = -2;
 
 const authenticate = async (req, res, next) => {
-    let jwtToken = req.header.token;
+    let jwtToken = req.header('token');
 
     if(!jwtToken) {
         next(httpError(400, 'UnAuthorized User Request'));

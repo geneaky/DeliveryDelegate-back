@@ -2,14 +2,10 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/store/:id', function(req, res) {
-    const name = req.params.name; // 가게 아이디
-    res.send('가게의 모든 정보 출력');
-});
-
-router.get('/store/:name', function(req, res) {
-    const name = req.params.name; // 가게 이름(아이디)
-    res.send('해당 가게의 리뷰 조회');
-});
+router.get('/',(req,res,next) => {
+    res.json({
+        test: "success"
+    })
+})
 
 module.exports = router;
