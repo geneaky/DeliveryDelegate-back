@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 
-module.exports = class Review extends Sequelize.Model {
+module.exports = class Reciept extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             reciept_id: {  // ?? 연번
@@ -20,8 +20,8 @@ module.exports = class Review extends Sequelize.Model {
         },{
             sequelize,
             timestamps:false,
-            modelName:'Review',
-            tableName:'reviews',    //mySQL 테이블 명 들어가는 곳
+            modelName:'Reciept',
+            tableName:'reciept',    //mySQL 테이블 명 들어가는 곳
             paranoid:false,
             cherset:'utf8mb4',
             collate:'utf8mb4_general_ci',

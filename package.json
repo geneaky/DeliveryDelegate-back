@@ -18,5 +18,18 @@
     "sequelize": "^6.19.0",
     "sequelize-cli": "^6.4.1",
     "socket.io": "^4.5.0"
-  }
+  },
+  "description": "![image](https://user-images.githubusercontent.com/50348197/166195435-733b27c6-ccd1-45b6-bcf1-8388d04696db.png)",
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geneaky/DeliveryDelegate-back.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/geneaky/DeliveryDelegate-back/issues"
+  },
+  "homepage": "https://github.com/geneaky/DeliveryDelegate-back#readme"
 }

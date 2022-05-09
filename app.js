@@ -5,7 +5,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { sequelize } = require('./models');
 const usersRouter = require('./api/routes/users');
-const indexRouter = require('./api/routes/index');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
 
