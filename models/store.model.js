@@ -44,6 +44,6 @@ module.exports = class Store extends Sequelize.Model {
   //관계설정 N:M = Store : User
   static associate(db) {
     db.Store.hasMany(db.Review,{foreignKey:'review_store_id',sourceKey:'store_id'});
-    db.Store.belongsToMany(db.User, {through: 'reciept', foreignKey: 'store_id', otherKey: 'reciept_store_id'});
+    db.Store.belongsToMany(db.User, {through: 'reciept', foreignKey: 'reciept_store_id', sourceKey:'store_id'});
     }
 };

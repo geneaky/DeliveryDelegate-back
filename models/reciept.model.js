@@ -1,3 +1,4 @@
+/* 굳이 정의 안해도 알아서 생김
 const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 
@@ -11,11 +12,9 @@ module.exports = class Reciept extends Sequelize.Model {
                 },
             reciept_user_id : {  // (외래키)리뷰 작성자 
                 type: DataTypes.INTEGER, 
-                primaryKey: true, 
             },
             reciept_store_id : {  // (외래키)가게 정보
                 type: DataTypes.INTEGER, 
-                primaryKey: true, 
             },
         },{
             sequelize,
@@ -31,4 +30,4 @@ module.exports = class Reciept extends Sequelize.Model {
     static associate(db){
         /// ..?
     }
-}
+}*/

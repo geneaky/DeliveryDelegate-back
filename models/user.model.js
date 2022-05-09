@@ -12,7 +12,7 @@ module.exports = class User extends Sequelize.Model {
         phone_number: { // 주민번호 대신 본인확인용으로 전화번호
             type: DataTypes.STRING(20),
             allowNull: false,
-            unique: true,
+            //unique: true,
         },
         password: {  // 비밀번호
             type: DataTypes.STRING(40),
@@ -45,6 +45,6 @@ module.exports = class User extends Sequelize.Model {
     db.User.hasMany(db.Delegator,{foreignKey:'delegator_user_id',sourceKey:'user_id'});
     db.User.hasMany(db.Review,{foreignKey:'review_user_id',sourceKey:'user_id'});
     db.User.hasMany(db.Thumb,{foreignKey:'thumb_user_id',sourceKey:'user_id'});
-    db.User.belongsToMany(db.Store, {through: 'reciept', foreignKey: 'user_id', otherKey: 'reciept_user_id'});
+    db.User.belongsToMany(db.Store, {through: 'reciept', foreignKey: 'reciept_user_id', sourceKey:'user_id'});
 }
 };

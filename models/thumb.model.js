@@ -18,11 +18,11 @@ module.exports = class Thumb extends Sequelize.Model {
                 primaryKey: true, 
             },
             thumb_up:{
-                type: DataTypes.TINYINT, //mysql 불린
+                type: DataTypes.BOOLEAN, 
                 allowNull: false,
             },
             thumb_down:{
-                type: DataTypes.TINYINT, //mysql 불린
+                type: DataTypes.BOOLEAN, 
                 allowNull: false,
             },
             
