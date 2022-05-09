@@ -1,65 +1,36 @@
-const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const usersRouter = require('./routes/users');
-const indexRouter = require('./routes/index');
-const reviewRouter = require('./routes/review');
-const storeRouter = require('./routes/store');
+const dotenv = require('dotenv');
+const authenticate = require('./api/middlewares/auth');
+const {sequelize} = require('./models');
+const usersRouter = require('./api/routes/users');
+const reviewRouter = require('./api/routes/review');
+const storeRouter = require('./api/routes/store');
 
-var app = express();
+dotenv.config();
+sequelize.sync({force:false})
+    .then(() => {
+      console.log('success connecting database');
+    })
+    .catch((err) => {
+      console.log('fail connecting database');
+    });
 
-// port set
-app.set('port',process.env.PORT || 8080);
-
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.urlencoded({ extended: false }));
 
-// router 나중에 '/' -> '/@@'로 수정 예정
-app.use('/', indexRouter); //  /...
-app.use('/', usersRouter); //  /user/...
-app.use('/', storeRouter); //  /store/...
-app.use('/', reviewRouter); // /review/...
+app.use('/users', usersRouter);
+app.use('/store',authenticate, storeRouter);
+app.use('/review',authenticate, reviewRouter);
 
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use((err, req, res, next) => {
+  console.log(err.message);
+  res.status(err.status|| 500).send(err.message);
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.listen(process.env.DEVELOPMENT_PORT || 8080,() => {
+  console.log('Server Start');
 });
-
-app.listen(app.get('port'),() => {
-  console.log(app.get('port'),'번 포트에서 서버 실행중');
-});
-
-
-module.exports = app;
-
-
-/* socket.io 관련 코드  (수정중)
-const websocket = require('./socket.js'); // socket연결
-
-
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-
-*/
