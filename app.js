@@ -1,19 +1,15 @@
-const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const createError = require('http-errors');
 const { sequelize } = require('./models');
+const middleWares = require('./api/middlewares/middleware');
 const usersRouter = require('./api/routes/users');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
 
-var app = express();
+const app = express();
 
 // port set
 app.set('port',process.env.PORT || 8080);
-
-
 
 // sequelize 연결
 sequelize.sync({ force: false })
@@ -24,23 +20,20 @@ sequelize.sync({ force: false })
     console.error(err);
   });
 
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// middle ware 
+app.use(middleWares);
 
 // router
 app.use('/user', usersRouter); //  /user/...
 app.use('/store', storeRouter); //  /store/...
 app.use('/review', reviewRouter); // /review/...
 
-
+/* error 처리 */
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -53,7 +46,9 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
  
+// server run
 app.listen(app.get('port'),() => {
   console.log(app.get('port'),'번 포트에서 서버 실행중');
 }); 
