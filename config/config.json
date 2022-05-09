@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "1234",
-    "database": "dal2",
+    "database": "dal",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
