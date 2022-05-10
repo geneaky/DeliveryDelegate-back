@@ -1,13 +1,12 @@
 # 달대표 | DeliveryDelegate   
 
-  
-![image](https://user-images.githubusercontent.com/50348197/166195435-733b27c6-ccd1-45b6-bcf1-8388d04696db.png)
-  
+
+![image](https://user-images.githubusercontent.com/50348197/166867011-c2e0d157-c44a-494a-be98-eed7be41556a.png)
   
 **2022.03.02 ~ 2022.**
 
 컴퓨터소프트웨어공학과 4학년 졸업작품 `BACKEND`
-
+.
 
 
 ## Introduction
@@ -34,3 +33,7 @@
 
 ## System
 ![image](https://user-images.githubusercontent.com/50348197/166203146-412782ac-09fa-4871-8bae-a9e7c7eb906c.png)
+
+***
+### ERD
+https://www.erdcloud.com/d/hyRv9XbeEQ3WyTNv6
