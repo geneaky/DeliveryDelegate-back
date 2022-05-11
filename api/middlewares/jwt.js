@@ -7,7 +7,7 @@ const TOKEN_INVALID = -2;
 const sign = async (user) => {
 
     const payload = {
-        id : user.password,
+        id : user.user_id,
         posx : user.self_xpos,
         posy : user.self_ypos
     };
@@ -23,14 +23,12 @@ const sign = async (user) => {
 const verify = async (token) => {
     let decoded;
     try {
-        decoded = jwt.verify(token, secretKey, option);
-        console.log(decoded);
+        decoded = await jwt.verify(token, secretKey, option);
     } catch (err) {
         if (err.message === 'jwt expired') {
             console.log('expired token');
             return TOKEN_EXPIRED;
         } else {
-            console.log(err);
             console.log('invalid token');
             return TOKEN_INVALID;
         }
