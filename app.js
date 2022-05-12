@@ -24,7 +24,7 @@ app.use(express.json());
 
 app.use('/users', usersRouter);
 app.use('/store',authenticate, storeRouter);
-app.use('/review',authenticate, reviewRouter);
+app.use('/review', reviewRouter);//authenticate, 
 
 app.use((err, req, res, next) => {
   console.log(err.message);
@@ -32,5 +32,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(process.env.DEVELOPMENT_PORT || 8080,() => {
-  console.log('Server Start');
+  console.log('Server Start on ',process.env.DEVELOPMENT_PORT);
 });
+
+const err = new Error()

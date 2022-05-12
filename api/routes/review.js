@@ -1,15 +1,19 @@
-/* [/review/...] 사용자 리뷰를 불러오는 파일 */
+/* [/review/...] 리뷰작성 및 조회 */
 const express = require('express');
+const { Review } = require('../../models');
+const reviewService = require('../../services/review_service');
 const router = express.Router();
 
-router.post('/post/:id', function(req, res) {
-    const name = req.params.name; // 작성자 아이디
-    res.send('로그인한 사용자가 리뷰작성');
+router.post('/:storeid/post', function(req, res, next) {
+    reviewService.writwReview(req, res, next);
+    JSON.parse(req.aa);
+    
+    //res.send(`로그인한 ${user}가 ${store}에 리뷰작성`);
 });
 
-router.get('/:id', function(req, res) {
-    const name = req.params.name; // 작성자 아이디
-    res.send('사용자가 작성한 리뷰 조회');
+router.get('/:storeid', function(req, res) {
+    const store = req.params.storeid; // 가게 코드(아이디)
+    res.send('가게의 리뷰 정보 조회');
 });
 
 module.exports = router;

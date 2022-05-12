@@ -22,6 +22,7 @@ Store.belongsToMany(User, {through: Review, as: 'store_review_id'});
 User.belongsToMany(Review, {through: Thumb, as: 'user_thumb_id'});
 Review.belongsToMany(User, {through: Thumb, as: 'review_thumb_id'});
 
+
 const db = {};
 db.sequelize = sequelize;
 
