@@ -12,4 +12,8 @@ router.post('/register', (req, res, next) => {
     storeService.registerStore(req, res, next);
 });
 
+router.get('/:id/reviews', (req, res, next) => {
+    storeService.getReviews(req, res, next);
+})
+
 module.exports = router;
