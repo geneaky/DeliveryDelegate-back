@@ -8,8 +8,6 @@ const sign = async (user) => {
 
     const payload = {
         id : user.user_id,
-        posx : user.self_xpos,
-        posy : user.self_ypos
     };
 
     const result = {
