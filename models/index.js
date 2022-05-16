@@ -10,17 +10,16 @@ const Reciept = require('./reciept.model')(sequelize, User, Store);
 const Review = require('./review.model')(sequelize, User, Store);
 const Thumb = require('./thumb.model')(sequelize, User, Review);
 
-User.belongsToMany(Game, {through: Delegator, as: 'user_delegator_id'});
-Game.belongsToMany(User, {through: Delegator, as: 'game_delegator_id'});
+User.belongsToMany(Game, {through: Delegator});
+Game.belongsToMany(User, {through: Delegator});
 
-User.belongsToMany(Store, {through: Reciept, as: 'user_reciept_id'});
-Store.belongsToMany(Store, {through: Reciept, as: 'store_reciept_id'});
+User.belongsToMany(Store, {through: Review});
+Store.belongsToMany(User, {through: Review});
 
-User.belongsToMany(Store, {through: Review, as: 'user_review_id'});
-Store.belongsToMany(User, {through: Review, as: 'store_review_id'});
+Reciept.hasOne(Review);
 
-User.belongsToMany(Review, {through: Thumb, as: 'user_thumb_id'});
-Review.belongsToMany(User, {through: Thumb, as: 'review_thumb_id'});
+User.belongsToMany(Review, {through: Thumb});
+Review.belongsToMany(User, {through: Thumb});
 
 
 const db = {};
