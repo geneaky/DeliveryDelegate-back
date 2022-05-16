@@ -51,4 +51,22 @@ const login = async (req, res, next) => {
     next(httpError(400, 'UnAuthorized User Request'));
 }
 
-module.exports = {registerUser, login};
+const setUserTown = async (req, res, next) => {
+    const jwtToken = req.header('token');
+    const user = await jwt.verify(jwtToken);
+
+    User.update({
+        self_xpos: req.body.posx,
+        self_ypos: req.body.posy
+    },{
+        where:{
+            user_id : user.id
+        }
+    }).then((user) => {
+        return res.status(200).end();
+    }).catch((err) => {
+        next(httpError(500, 'Server Error'));
+    });
+}
+
+module.exports = {registerUser, login, setUserTown};

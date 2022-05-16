@@ -20,11 +20,12 @@ const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
 
 app.use('/users', usersRouter);
-app.use('/store',authenticate, storeRouter);
-app.use('/review',authenticate, reviewRouter);
+// app.use('/store',authenticate, storeRouter);
+app.use('/store', storeRouter);
+// app.use('/review',authenticate, reviewRouter);
+app.use('/review', reviewRouter);
 
 app.use((err, req, res, next) => {
   console.log(err.message);

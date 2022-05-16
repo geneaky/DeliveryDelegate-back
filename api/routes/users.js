@@ -12,4 +12,8 @@ router.post('/login', (req, res, next) => {
   userService.login(req, res, next);
 })
 
+router.post('/town', (req, res, next) => {
+  userService.setUserTown(req, res, next);
+})
+
 module.exports = router;
