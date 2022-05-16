@@ -6,18 +6,13 @@ const crypto = require('crypto');
 
 
 
-const writwReview = async function(req, res, next){
-
-    try{
+const writwReview = async (req, res, next) => {
     /*if(사용자정보X && 가게정보X && 리뷰 내용 XX) {
         return res.json({
             message: 'Review registration failed'
         });
     }*/
-    console.log(res.json(req.decoded));
-    console.log(req.params.storeid, req.body.review)
 
-    /*
     await Review.create({
         user_id : req.get(userid), // 사용자 정보
         store_id :req.params.storeid,
@@ -40,13 +35,10 @@ const writwReview = async function(req, res, next){
             }}
         );
         res.status(200).json({message : 'Provide exemption '});
-    }*/
+    }
    
 
     res.status(200).json({message : 'Review registered'});
-} catch(error){
-    res.status(500).send({ message: error.message });
-}
 };
 
 

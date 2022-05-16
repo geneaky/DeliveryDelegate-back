@@ -22,12 +22,8 @@ const User = (sequelize) => sequelize.define('User',{
     self_ypos: {
         type: DataTypes.STRING,
         allowNull: true
-    },
-    exemption_count : {
-        type: DataTypes.INTEGER,
-        allowNull: true
     }
 });
 
 module.exports = User;
-    
+
