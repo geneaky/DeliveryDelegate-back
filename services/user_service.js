@@ -17,7 +17,8 @@ const registerUser = async (req, res, next) => {
         phone_number: req.body.phone_number,
         password: hashPassword(req.body.password),
         self_xpos: req.body.xpos,
-        self_ypos: req.body.ypos
+        self_ypos: req.body.ypos,
+        exemption_count : 0
     });
 
     res.status(200).json({message : 'account created'});

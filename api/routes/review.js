@@ -1,14 +1,11 @@
 /* [/review/...] 리뷰작성 및 조회 */
 const express = require('express');
-const { Review } = require('../../models');
 const reviewService = require('../../services/review_service');
 const router = express.Router();
 
-router.post('/:storeid/post', function(req, res, next) {
+
+router.post('/:storeid/post', async function(req, res, next) {
     reviewService.writwReview(req, res, next);
-    JSON.parse(req.aa);
-    
-    //res.send(`로그인한 ${user}가 ${store}에 리뷰작성`);
 });
 
 router.get('/:storeid', function(req, res) {

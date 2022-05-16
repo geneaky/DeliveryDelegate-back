@@ -7,9 +7,7 @@ const TOKEN_INVALID = -2;
 const sign = async (user) => {
 
     const payload = {
-        id : user.password,
-        posx : user.self_xpos,
-        posy : user.self_ypos
+        id : user.user_id,
     };
 
     const result = {

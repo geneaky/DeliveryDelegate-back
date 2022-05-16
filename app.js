@@ -23,8 +23,8 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: false }));
 
 app.use('/users', usersRouter);
-app.use('/store',authenticate, storeRouter);
-app.use('/review', reviewRouter);//authenticate, 
+app.use('/store', authenticate, storeRouter);
+app.use('/review', authenticate, reviewRouter);
 
 app.use((err, req, res, next) => {
   console.log(err.message);
