@@ -7,20 +7,6 @@ const Thumb = (sequelize, User, Review) => sequelize.define('Thumb', {
         autoIncrement: true,
         primaryKey: true
     },
-    user_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'user_id'
-        }
-    },
-    review_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Review,
-            key: 'review_id'
-        }
-    },
     thumb_up: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
