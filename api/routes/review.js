@@ -8,9 +8,14 @@ router.post('/:storeid/post', async function(req, res, next) {
     reviewService.writwReview(req, res, next);
 });
 
+router.get('/:storeid/thumb', async function(req, res, next) {
+    reviewService.thumbUp(req, res, next);
+});
+
 router.get('/:storeid', function(req, res) {
     const store = req.params.storeid; // 가게 코드(아이디)
     res.send('가게의 리뷰 정보 조회');
 });
+
 
 module.exports = router;

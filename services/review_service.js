@@ -2,6 +2,7 @@ const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
 const { Review } = require('../models');
 const { User } = require('../models');
+const { Thumb } = require('../models');
 const Sequelize = require('sequelize');
 const crypto = require('crypto');
 
@@ -47,4 +48,59 @@ const writwReview = async (req, res, next) => {
     };
 };
 
-module.exports = writwReview;
+
+const thumbUp = async (req,res,next) =>{
+    try{
+        const jwtToken = req.header('token');
+        const user = await jwt.verify(jwtToken);
+        console.log("uid : ",user.id);
+
+        let ReviewReviewId = await Review.findOne({
+            atterbutes : ['review_id'],
+            where: {
+                UserUserId : user.id, 
+                StoreStoreId :req.params.storeid,
+            }
+        });
+
+        console.log("ReviewReviewId",ReviewReviewId.review_id)
+        
+        await Thumb.create({
+            ReviewReviewId : ReviewReviewId.review_id,
+            thumb_up : 1,
+        });
+
+        let thumbUp = await Thumb.findOne({
+            where: {
+                UserUserId : user.id, 
+                ReviewReviewId : ReviewReviewId.review_id,
+            }
+        });
+           
+        console.log("thumb_up",thumbUp.thumb_id);
+
+        
+        await Thumb.update({ 
+            thumb_up: Sequelize.literal('thumb_up + 1') }, 
+            { where: { 
+                thumb_id : thumbUp.thumb_id
+            } 
+        });
+
+
+        //좋아요 취소
+        if(thumbUp.thumb_up % 2 === 0){
+            res.status(200).json({message : 'thumb Down '});
+        }
+        else { // 좋아요
+            res.status(200).json({message : 'thumb UP ! '});
+        }
+
+    } catch(error){
+        res.status(500).send({ message: error.message });
+    }
+    
+};
+
+
+module.exports = {writwReview, thumbUp};
