@@ -67,4 +67,12 @@ const setUserTown = async (req, res, next) => {
     });
 }
 
-module.exports = {registerUser, login, setUserTown};
+const checkExistedUser = async(req, res, next) => {
+    if(findUser(req,res,next)) {
+        return res.json({ message : 'existed'});
+    }
+
+    return res.json({ message : 'not existed'});
+}
+
+module.exports = {registerUser, login, setUserTown, checkExistedUser};
