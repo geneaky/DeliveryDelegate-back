@@ -16,8 +16,7 @@ const registerUser = async (req, res, next) => {
     await User.create({
         phone_number: req.body.phone_number,
         password: hashPassword(req.body.password),
-        self_xpos: req.body.xpos,
-        self_ypos: req.body.ypos
+        address: req.body.address
     });
 
     res.status(200).json({message : 'account created'});
@@ -56,8 +55,7 @@ const setUserTown = async (req, res, next) => {
     const user = await jwt.verify(jwtToken);
 
     User.update({
-        self_xpos: req.body.posx,
-        self_ypos: req.body.posy
+        address: req.body.address
     },{
         where:{
             user_id : user.id
