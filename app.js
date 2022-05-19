@@ -8,6 +8,9 @@ const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
 
 dotenv.config();
+
+const app = express();
+
 sequelize.sync({force:false})
     .then(() => {
       console.log('success connecting database');
@@ -16,7 +19,6 @@ sequelize.sync({force:false})
       console.log('fail connecting database');
     });
 
-const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -32,6 +34,6 @@ app.use((err, req, res, next) => {
   res.status(err.status|| 500).send(err.message);
 });
 
-app.listen(process.env.DEVELOPMENT_PORT || 8080,() => {
+app.listen(8080,() => {
   console.log('Server Start');
 });
