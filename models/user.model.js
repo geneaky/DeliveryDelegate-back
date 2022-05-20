@@ -15,13 +15,9 @@ const User = (sequelize) => sequelize.define('User',{
         type: DataTypes.STRING,
         allowNull: false
     },
-    self_xpos: {
-        type: DataTypes.STRING,
-        allowNull: true
-    },
-    self_ypos: {
-        type: DataTypes.STRING,
-        allowNull: true
+    nickname: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     address: {
         type: DataTypes.STRING,
