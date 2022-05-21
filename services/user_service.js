@@ -16,7 +16,8 @@ const registerUser = async (req, res, next) => {
     await User.create({
         phone_number: req.body.phone_number,
         password: hashPassword(req.body.password),
-        address: req.body.address
+        address: req.body.address,
+        nickname: req.body.nickname
     });
 
     res.status(200).json({message : 'account created'});
