@@ -19,7 +19,7 @@ sequelize.sync({force:false})
       console.log('fail connecting database');
     });
 
-
+app.use(express.static('public'));
 app.use(logger('dev'));
 app.use(express.json());
 
