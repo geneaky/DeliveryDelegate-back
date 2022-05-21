@@ -18,6 +18,8 @@ const registerUser = async (req, res, next) => {
         password: hashPassword(req.body.password),
         address: req.body.address,
         nickname: req.body.nickname
+    }).catch(() => {
+        return next(httpError(500, 'Server Error'));
     });
 
     res.status(200).json({message : 'account created'});
