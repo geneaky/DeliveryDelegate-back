@@ -4,7 +4,7 @@ const userService = require('../../services/user_service');
 
 
 router.post('/register/existed', (req, res, next) => {
-  userService.checkExistedUser(req, res, next);
+  userService.checkDuplicatePhoneNumber(req, res, next);
 });
 
 router.post('/register', (req, res,next) => {

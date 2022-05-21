@@ -79,12 +79,20 @@ const setUserTown = async (req, res, next) => {
     });
 }
 
-const checkExistedUser = async(req, res, next) => {
-    if(await findUser(req,res,next)) {
-        return res.json({ message : 'existed'});
+const checkDuplicatePhoneNumber = async(req, res, next) => {
+    let duplicatedUser = await User.findOne({
+        where: {
+            phone_number: req.body.phone_number,
+        }
+    }).catch((err) => {
+        return next(err);
+    });
+
+    if(duplicatedUser) {
+        return res.json({ message : 'existed'})
     }
 
-    return res.json({ message : 'not existed'});
+    return res.json({ message : 'not existed'})
 }
 
-module.exports = {registerUser, login, setUserTown, checkExistedUser};
+module.exports = {registerUser, login, setUserTown, checkDuplicatePhoneNumber};
