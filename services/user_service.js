@@ -36,7 +36,7 @@ const findUser = async (req, res, next) => {
     });
 }
 
-const login = async (req, res, next) => {
+/*const login = async (req, res, next) => {
     let authenticatedUser = await findUser(req, res, next);
 
     if(authenticatedUser) {
@@ -44,6 +44,18 @@ const login = async (req, res, next) => {
         return res.status(200).json({
             user: authenticatedUser,
             token: jwtToken
+        });
+    }
+
+    next(httpError(400, 'UnAuthorized User Request'));
+}*/
+
+const login = async (req, res, next) => {
+    let authenticatedUser = await findUser(req, res, next);
+
+    if(authenticatedUser) {
+        return res.status(200).json({
+            user: authenticatedUser,
         });
     }
 
