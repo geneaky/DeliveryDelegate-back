@@ -80,7 +80,7 @@ const setUserTown = async (req, res, next) => {
 }
 
 const checkExistedUser = async(req, res, next) => {
-    if(findUser(req,res,next)) {
+    if(await findUser(req,res,next)) {
         return res.json({ message : 'existed'});
     }
 
