@@ -55,7 +55,7 @@ const findUser = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     let authenticatedUser = await findUser(req, res, next);
-
+    console.log(authenticatedUser);
     if(authenticatedUser) {
         return res.status(200).json({
             user: authenticatedUser,
