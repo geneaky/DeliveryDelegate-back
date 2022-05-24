@@ -41,21 +41,3 @@ app.listen(process.env.DEVELOPMENT_PORT || 8080,() => {
 });
 
 const err = new Error()
-/* socket.id */
-io.on("connection",(socket) =>{
-  console.log(`new Client : ${ip}, socket.id : ${socket.id}`);
-  socket.on('connect user', function(user){
-      console.log("Connected user ");
-      socket.join(user['roomName']);
-      console.log("roomName : ",user['roomName']);
-      console.log("state : ",socket.adapter.rooms);
-      io.emit('connect user', user);
-  });
-
-  socket.on('chat message', function(msg){
-      console.log("Message " + msg['message']);
-      console.log("보내는 아이디 : ",msg['roomName']);
-      io.to(msg['roomName']).emit('chat message', msg);
-  });
-
-});
