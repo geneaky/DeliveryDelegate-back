@@ -16,7 +16,7 @@ router.get('/search/place', async(req, res, next) => {
     const place = encodeURI(req.query.name);
     await naverMap.get(`local.json?query=${place}&display=5`)
         .then((result) => {
-        return res.json({result : result.data});
+        return res.json({result : result.data.items});
         })
         .catch((err) => {
             console.log(err);
