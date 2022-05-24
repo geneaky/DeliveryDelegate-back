@@ -36,6 +36,33 @@ app.use((err, req, res, next) => {
   res.status(err.status|| 500).send(err.message);
 });
 
+console.log("outside io");
+
+io.on('connection', function(socket){
+
+  console.log('User Conncetion');
+
+  socket.on('connect user', function(user){
+    console.log("Connected user ");
+    socket.join(user['roomName']);
+    console.log("roomName : ",user['roomName']);
+    console.log("state : ",socket.adapter.rooms);
+    io.emit('connect user', user);
+  });
+
+  socket.on('on typing', function(typing){
+    console.log("Typing.... ");
+    io.emit('on typing', typing);
+  });
+
+  socket.on('chat message', function(msg){
+    console.log("Message " + msg['message']);
+    console.log("보내는 메세지 : ",msg['roomName']);
+    io.to(msg['roomName']).emit('chat message', msg);
+  });
+});
+
 app.listen(8080,() => {
   console.log('Server Start');
 });
+
