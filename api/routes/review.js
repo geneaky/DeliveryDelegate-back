@@ -1,4 +1,3 @@
-/* 사용자 리뷰를 불러오는 파일 */
 const express = require('express');
 const router = express.Router();
 

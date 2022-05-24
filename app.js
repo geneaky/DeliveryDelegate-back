@@ -6,6 +6,7 @@ const {sequelize} = require('./models');
 const usersRouter = require('./api/routes/users');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
+const mapRouter = require('./api/routes/map');
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use('/users', usersRouter);
 app.use('/store', storeRouter);
 // app.use('/review',authenticate, reviewRouter);
 app.use('/review', reviewRouter);
+app.use('/map', mapRouter);
 
 app.use((err, req, res, next) => {
   console.log(err.message);
