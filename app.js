@@ -6,13 +6,13 @@ const {sequelize} = require('./models');
 const usersRouter = require('./api/routes/users');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
+const mapRouter = require('./api/routes/map');
+
+dotenv.config();
 
 const app = express();
 
-var http = require('http').Server(app);
-const io = require('socket.io')(http)
 
-dotenv.config();
 sequelize.sync({force:false})
     .then(() => {
       console.log('success connecting database');
@@ -22,22 +22,25 @@ sequelize.sync({force:false})
     });
 
 
-
+app.use(express.static('public'));
 app.use(logger('dev'));
 app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
 
 app.use('/users', usersRouter);
-app.use('/store', authenticate, storeRouter);
-app.use('/review', authenticate, reviewRouter);
+// app.use('/store',authenticate, storeRouter);
+app.use('/store', storeRouter);
+// app.use('/review',authenticate, reviewRouter);
+app.use('/review', reviewRouter);
+app.use('/map', mapRouter);
+
 
 app.use((err, req, res, next) => {
   console.log(err.message);
   res.status(err.status|| 500).send(err.message);
 });
 
-app.listen(process.env.DEVELOPMENT_PORT || 8080,() => {
-  console.log('Server Start on ',process.env.DEVELOPMENT_PORT);
+
+app.listen(8080,() => {
+  console.log('Server Start');
 });
 
-const err = new Error()

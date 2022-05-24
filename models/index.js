@@ -21,7 +21,6 @@ Reciept.hasOne(Review);
 User.belongsToMany(Review, {through: Thumb});
 Review.belongsToMany(User, {through: Thumb});
 
-
 const db = {};
 db.sequelize = sequelize;
 

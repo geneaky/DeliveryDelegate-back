@@ -15,19 +15,14 @@ const User = (sequelize) => sequelize.define('User',{
         type: DataTypes.STRING,
         allowNull: false
     },
-    self_xpos: {
-        type: DataTypes.STRING,
-        allowNull: true
+    nickname: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
-    self_ypos: {
+    address: {
         type: DataTypes.STRING,
-        allowNull: true
-    },
-    exemption_count : {
-        type: DataTypes.INTEGER,
         allowNull: true
     }
 });
 
 module.exports = User;
-    

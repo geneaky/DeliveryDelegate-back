@@ -16,9 +16,11 @@ const registerUser = async (req, res, next) => {
     await User.create({
         phone_number: req.body.phone_number,
         password: hashPassword(req.body.password),
-        self_xpos: req.body.xpos,
-        self_ypos: req.body.ypos,
+        address: req.body.address,
+        nickname: req.body.nickname,
         exemption_count : 0
+    }).catch(() => {
+        return next(httpError(500, 'Server Error'));
     });
 
     res.status(200).json({message : 'account created'});
@@ -38,7 +40,8 @@ const findUser = async (req, res, next) => {
     });
 }
 
-const login = async (req, res, next) => {
+
+/*const login = async (req, res, next) => {
     let authenticatedUser = await findUser(req, res, next);
 
     if(authenticatedUser) {
@@ -50,6 +53,51 @@ const login = async (req, res, next) => {
     }
 
     next(httpError(400, 'UnAuthorized User Request'));
+}*/
+
+const login = async (req, res, next) => {
+    let authenticatedUser = await findUser(req, res, next);
+    console.log(authenticatedUser);
+    if(authenticatedUser) {
+        return res.status(200).json({
+            user: authenticatedUser,
+        });
+    }
+
+    next(httpError(400, 'UnAuthorized User Request'));
 }
 
-module.exports = {registerUser, login};
+const setUserTown = async (req, res, next) => {
+    const jwtToken = req.header('token');
+    const user = await jwt.verify(jwtToken);
+
+    User.update({
+        address: req.body.address
+    },{
+        where:{
+            user_id : user.id
+        }
+    }).then((user) => {
+        return res.status(200).end();
+    }).catch((err) => {
+        next(httpError(500, 'Server Error'));
+    });
+}
+
+const checkDuplicatePhoneNumber = async(req, res, next) => {
+    let duplicatedUser = await User.findOne({
+        where: {
+            phone_number: req.body.phone_number,
+        }
+    }).catch((err) => {
+        return next(err);
+    });
+
+    if(duplicatedUser) {
+        return res.json({ message : 'existed'})
+    }
+
+    return res.json({ message : 'not existed'})
+}
+
+module.exports = {registerUser, login, setUserTown, checkDuplicatePhoneNumber};
