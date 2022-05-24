@@ -1,35 +1,20 @@
 const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
-const { Review,User,Thumb,Store } = require('../models');
+const { Review } = require('../models');
+const { User } = require('../models');
+const { Thumb } = require('../models');
 const Sequelize = require('sequelize');
 const crypto = require('crypto');
 
-const recieptAuth = async (req, res, next) => {
-    try{
-        const store = await Store.findOne({
-            where: {
-                store_id : req.params.storeid,
-                // store_name : req.body.store_name, 추후 변경
-                // store_xpos : req.body.store_xpos,
-                // store_ypos : req.body.store_ypos,
-                // store_address : req.body.store_address
-             }
-        })
-        const recieptAll = req.body.recieptAll; // 영수증 ocr 처리 결과
 
-        if(recieptAll.includes('store.name')){
-            res.status(200).json({message : 'Receipt Verified'});
-        }else{
-            console.log('');
-            res.status(200).send({ message: "Receipt recognition failure. TRY ANGIN.."});
-        }
-    } catch(error){
-        res.status(500).send({ message: error.message });
-    }
-};
 
 const writwReview = async (req, res, next) => {
     try{
+        /*if(사용자정보X && 가게정보X && 리뷰 내용 XX) {
+            return res.json({
+                message: 'Review registration failed'
+            });
+        }*/
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
         console.log("uid : ",user.id);
@@ -62,7 +47,7 @@ const writwReview = async (req, res, next) => {
         res.status(500).send({ message: error.message });
     };
 };
-    
+
 
 const thumbUp = async (req,res,next) =>{
     try{
@@ -118,6 +103,4 @@ const thumbUp = async (req,res,next) =>{
 };
 
 
-
-
-module.exports = {writwReview, recieptAuth, thumbUp};
+module.exports = {writwReview, thumbUp};
