@@ -16,10 +16,7 @@ const registerUser = async (req, res, next) => {
     await User.create({
         phone_number: req.body.phone_number,
         password: hashPassword(req.body.password),
-        address: req.body.address,
         nickname: req.body.nickname,
-        self_posx: req.body.self_posx,
-        self_posy: req.body.self_posy,
         exemption_count : 0
 
     }).catch(() => {
@@ -44,7 +41,7 @@ const findUser = async (req, res, next) => {
 }
 
 
-/*const login = async (req, res, next) => {
+const login = async (req, res, next) => {
     let authenticatedUser = await findUser(req, res, next);
 
     if(authenticatedUser) {
@@ -56,18 +53,6 @@ const findUser = async (req, res, next) => {
     }
 
     next(httpError(400, 'UnAuthorized User Request'));
-}*/
-
-const login = async (req, res, next) => {
-    let authenticatedUser = await findUser(req, res, next);
-    console.log(authenticatedUser);
-    if(authenticatedUser) {
-        return res.status(200).json({
-            user: authenticatedUser,
-        });
-    }
-
-    next(httpError(400, 'UnAuthorized User Request'));
 }
 
 const setUserTown = async (req, res, next) => {
@@ -75,7 +60,8 @@ const setUserTown = async (req, res, next) => {
     const user = await jwt.verify(jwtToken);
 
     User.update({
-        address: req.body.address
+        self_posx: req.body.self_posx,
+        self_posy: req.body.self_posy
     },{
         where:{
             user_id : user.id

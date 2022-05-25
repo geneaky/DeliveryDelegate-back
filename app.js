@@ -27,10 +27,8 @@ app.use(logger('dev'));
 app.use(express.json());
 
 app.use('/users', usersRouter);
-// app.use('/store',authenticate, storeRouter);
-app.use('/store', storeRouter);
-// app.use('/review',authenticate, reviewRouter);
-app.use('/review', reviewRouter);
+app.use('/store',authenticate, storeRouter);
+app.use('/review',authenticate, reviewRouter);
 app.use('/map', mapRouter);
 
 
