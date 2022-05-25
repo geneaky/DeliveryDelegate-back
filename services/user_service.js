@@ -17,7 +17,9 @@ const registerUser = async (req, res, next) => {
         phone_number: req.body.phone_number,
         password: hashPassword(req.body.password),
         address: req.body.address,
-        nickname: req.body.nickname
+        nickname: req.body.nickname,
+        self_posx: req.body.self_posx,
+        self_posy: req.body.self_posy
     }).catch(() => {
         return next(httpError(500, 'Server Error'));
     });
