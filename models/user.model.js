@@ -26,6 +26,10 @@ const User = (sequelize) => sequelize.define('User',{
     self_posy: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    exemption_count: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 });
 
