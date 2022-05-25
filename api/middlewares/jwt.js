@@ -21,7 +21,7 @@ const sign = async (user) => {
 const verify = async (token) => {
     let decoded;
     try {
-        decoded = await jwt.verify(token, secretKey, option);
+      decoded = await jwt.verify(token, secretKey, option);
     } catch (err) {
         if (err.message === 'jwt expired') {
             console.log('expired token');

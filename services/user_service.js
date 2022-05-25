@@ -6,7 +6,7 @@ const crypto = require('crypto');
 const registerUser = async (req, res, next) => {
 
     let existedUser = await findUser(req, res, next);
-
+  
     if(existedUser) {
         return res.json({
             message: 'user already existed'
@@ -19,7 +19,9 @@ const registerUser = async (req, res, next) => {
         address: req.body.address,
         nickname: req.body.nickname,
         self_posx: req.body.self_posx,
-        self_posy: req.body.self_posy
+        self_posy: req.body.self_posy,
+        exemption_count : 0
+
     }).catch(() => {
         return next(httpError(500, 'Server Error'));
     });
@@ -40,6 +42,7 @@ const findUser = async (req, res, next) => {
         next(err);
     });
 }
+
 
 /*const login = async (req, res, next) => {
     let authenticatedUser = await findUser(req, res, next);

@@ -12,6 +12,7 @@ dotenv.config();
 
 const app = express();
 
+
 sequelize.sync({force:false})
     .then(() => {
       console.log('success connecting database');
@@ -19,6 +20,7 @@ sequelize.sync({force:false})
     .catch((err) => {
       console.log('fail connecting database');
     });
+
 
 app.use(express.static('public'));
 app.use(logger('dev'));
@@ -31,11 +33,14 @@ app.use('/store', storeRouter);
 app.use('/review', reviewRouter);
 app.use('/map', mapRouter);
 
+
 app.use((err, req, res, next) => {
   console.log(err.message);
   res.status(err.status|| 500).send(err.message);
 });
 
+
 app.listen(8080,() => {
   console.log('Server Start');
 });
+
