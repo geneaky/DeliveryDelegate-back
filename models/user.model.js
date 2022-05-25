@@ -19,7 +19,11 @@ const User = (sequelize) => sequelize.define('User',{
       type: DataTypes.STRING,
       allowNull: false
     },
-    address: {
+    self_posx: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    self_posy: {
         type: DataTypes.STRING,
         allowNull: true
     }
