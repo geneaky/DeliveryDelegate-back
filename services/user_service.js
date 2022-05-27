@@ -59,7 +59,7 @@ const setUserTown = async (req, res, next) => {
     const jwtToken = req.header('token');
     const user = await jwt.verify(jwtToken);
 
-    User.update({
+    await User.update({
         self_posx: req.body.self_posx,
         self_posy: req.body.self_posy
     },{
