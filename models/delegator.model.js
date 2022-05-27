@@ -9,7 +9,7 @@ const Delegator = (sequelize, User, Game) => sequelize.define('Delegator',{
     },
     ranking: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         unique: true,
     }
 });

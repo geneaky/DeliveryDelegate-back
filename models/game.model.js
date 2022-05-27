@@ -19,11 +19,11 @@ const Game = (sequelize) => sequelize.define('Game',{
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    landmark_xpos: {
+    landmark_posx: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    landmark_ypos: {
+    landmark_posy: {
         type: DataTypes.STRING,
         allowNull: false
     }
