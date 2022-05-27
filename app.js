@@ -7,6 +7,7 @@ const usersRouter = require('./api/routes/users');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
 const mapRouter = require('./api/routes/map');
+const gameRouter = require('./api/routes/game');
 
 dotenv.config();
 
@@ -29,7 +30,8 @@ app.use(express.json());
 app.use('/users', usersRouter);
 app.use('/store',authenticate, storeRouter);
 app.use('/review',authenticate, reviewRouter);
-app.use('/map', mapRouter);
+app.use('/map',authenticate, mapRouter);
+app.use('/games', gameRouter);
 
 
 app.use((err, req, res, next) => {
