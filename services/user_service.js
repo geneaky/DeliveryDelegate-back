@@ -19,11 +19,9 @@ const registerUser = async (req, res, next) => {
         nickname: req.body.nickname,
         exemption_count : 0
 
-    })
-        .then(() => {
+    }).then(() => {
         return res.status(200).json({message : 'account created'});
-        })
-        .catch(() => {
+    }).catch((err) => {
         return next(httpError(500, 'Server Error'));
     });
 }
@@ -38,7 +36,7 @@ const findUser = async (req, res, next) => {
             phone_number: req.body.phone_number,
             password: hashPassword(req.body.password)}
     }).catch((err) => {
-        next(err);
+        return next(err);
     });
 }
 
@@ -54,7 +52,7 @@ const login = async (req, res, next) => {
         });
     }
 
-    next(httpError(400, 'UnAuthorized User Request'));
+    return next(httpError(400, 'UnAuthorized User Request'));
 }
 
 const setUserTown = async (req, res, next) => {
@@ -71,7 +69,7 @@ const setUserTown = async (req, res, next) => {
     }).then((user) => {
         return res.status(200).end();
     }).catch((err) => {
-        next(httpError(500, 'Server Error'));
+        return next(httpError(500, 'Server Error'));
     });
 }
 
