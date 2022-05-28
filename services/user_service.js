@@ -19,11 +19,13 @@ const registerUser = async (req, res, next) => {
         nickname: req.body.nickname,
         exemption_count : 0
 
-    }).catch(() => {
+    })
+        .then(() => {
+        return res.status(200).json({message : 'account created'});
+        })
+        .catch(() => {
         return next(httpError(500, 'Server Error'));
     });
-
-    res.status(200).json({message : 'account created'});
 }
 
 const hashPassword = (password) => {
