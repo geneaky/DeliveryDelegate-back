@@ -1,6 +1,8 @@
 const express = require('express');
 const logger = require('morgan');
 const dotenv = require('dotenv');
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 const authenticate = require('./api/middlewares/auth');
 const {sequelize} = require('./models');
 const usersRouter = require('./api/routes/users');
@@ -39,8 +41,5 @@ app.use((err, req, res, next) => {
   res.status(err.status|| 500).send(err.message);
 });
 
-
-app.listen(8080,() => {
-  console.log('Server Start');
-});
+module.exports = app;
 

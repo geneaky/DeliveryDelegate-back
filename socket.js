@@ -1,12 +1,11 @@
-const express = require('express');
+const app = require('./app');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 
-const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
 
-const gameSocketNameSpace = io.of('/games');
+const gameSocketNameSpace = io.of('/game');
 
 gameSocketNameSpace.on('connection', (socket) => {
     socket.on('attend',() => {
@@ -24,4 +23,6 @@ gameSocketNameSpace.on('connection', (socket) => {
     })
 });
 
-httpServer.listen(8080);
+httpServer.listen(8080,() => {
+    console.log('Server Start');
+});
