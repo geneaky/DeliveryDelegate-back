@@ -1,8 +1,6 @@
 const express = require('express');
 const logger = require('morgan');
 const dotenv = require('dotenv');
-const { createServer } = require('http');
-const { Server } = require('socket.io');
 const authenticate = require('./api/middlewares/auth');
 const {sequelize} = require('./models');
 const usersRouter = require('./api/routes/users');

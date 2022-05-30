@@ -8,17 +8,14 @@ const io = new Server(httpServer, {});
 const gameSocketNameSpace = io.of('/game');
 
 gameSocketNameSpace.on('connection', (socket) => {
-    socket.on('attend',() => {
-        console.log(socket.id);
-        console.log('bi');
+
+    socket.on('attend',({room_name}) => {
+        socket.join(room_name);
+        socket.to(room_name).emit('hi', socket.id+'입장');
     });
 
     socket.on('sendMessage', (data) => {
-        console.log('test');
         const {socketId, msg} = data;
-        console.log(socketId);
-        console.log(msg);
-
         socket.to(socketId).emit('test', msg);
     })
 });
