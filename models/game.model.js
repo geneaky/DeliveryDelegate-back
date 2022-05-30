@@ -26,6 +26,10 @@ const Game = (sequelize) => sequelize.define('Game',{
     landmark_posy: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    socket_room_name: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 })
 

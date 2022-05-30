@@ -31,7 +31,7 @@ app.use('/users', usersRouter);
 app.use('/store',authenticate, storeRouter);
 app.use('/review',authenticate, reviewRouter);
 app.use('/map',authenticate, mapRouter);
-app.use('/games', gameRouter);
+app.use('/games', authenticate, gameRouter);
 
 
 app.use((err, req, res, next) => {

@@ -6,4 +6,8 @@ router.post('/register', (req, res, next) => {
     gameService.createGame(req, res, next);
 });
 
+router.get('/rooms', (req, res, next) => {
+   gameService.findGames(req, res, next);
+});
+
 module.exports = router;
