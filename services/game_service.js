@@ -33,7 +33,6 @@ const createGame = async (req, res, next) => {
 }
 
 const findGames = async (req, res, next) => {
-    const user = await jwt.verify(req.header('token'));
 
     const games = await Game.findAll().catch((err) => {
         return next(err);
