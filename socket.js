@@ -1,8 +1,8 @@
 const app = require('./app');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const jwt = require('/api/middlewares/jwt');
-const {User, Delegator, Game} = require('./models');
+const jwt = require('./api/middlewares/jwt');
+const {User, Delegator, Order, Game} = require('./models');
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
@@ -12,7 +12,7 @@ const gameSocketNameSpace = io.of('/game');
 gameSocketNameSpace.on('connection', (socket) => {
 
     //게임 참석
-    socket.on('attend',async ({token,game_id,room_name, size}) => {
+    socket.on('attend',async ({token,game_id,room_name, size,order}) => {
         const user = await jwt.verify(token);
 
         if((await gameSocketNameSpace.in(room_name).allSockets()).size === size) {
@@ -21,13 +21,26 @@ gameSocketNameSpace.on('connection', (socket) => {
             return;
         }
 
-        await Delegator.create({
+        const delegator = await Delegator.create({
             game_id: game_id,
             user_id: user.id
         }).catch((err) => {
             console.log(err);
+            console.log(1);
             return socket.disconnect();
-        })
+        });
+
+        await Order.create({
+            delegator_id: delegator.delegator_id,
+            store_name: order.store_name,
+            mapx: order.mapx,
+            mapy: order.mapy,
+            detail: order.detail,
+        }).catch((err) => {
+            console.log(err);
+            console.log(2);
+            return socket.disconnect();
+        });
 
         socket.join(room_name);
         socket.to(room_name).emit('attend', socket.id+'입장');
@@ -113,7 +126,7 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.disconnect();
     });
 
-    //게임 종료 후 게임 삭제 (대표자가 삭제)
+    //게임 종료 후 게임 삭제 (대표자가 삭제) --> 게임 생성하자마자 삭제하는 경우도 있음
     socket.on('game_remove', async({room_name,ranking},next) => {
         if(ranking === 1) {
             await Delegator.delete({

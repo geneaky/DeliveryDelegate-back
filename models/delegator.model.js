@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 
-const Delegator = (sequelize, User, Game) => sequelize.define('Delegator',{
+const Delegator = (sequelize) => sequelize.define('Delegator',{
     delegator_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,

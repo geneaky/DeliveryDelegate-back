@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 
-const Review = (sequelize, User, Store) => sequelize.define('Review', {
+const Review = (sequelize) => sequelize.define('Review', {
     review_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
