@@ -2,25 +2,43 @@ const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
 const { Review,User,Thumb,Store } = require('../models');
 const Sequelize = require('sequelize');
-const crypto = require('crypto');
+const vision = require('@google-cloud/vision');
+
+
+
+
+let visionOCR = async (img) => {
+    const client = new vision.ImageAnnotatorClient();
+    let string = '';
+    const [result] = await client.textDetection(img);
+    const detections = result.textAnnotations;
+    console.log('Text:');
+    detections.forEach(text => string += text.description);
+     
+    return string;
+}
+
 
 const recieptAuth = async (req, res, next) => {
     try{
+        const img = req.body.pic; //android img
+
         const store = await Store.findOne({
             where: {
                 store_id : req.params.storeid,
-                // store_name : req.body.store_name, 추후 변경
+                store_name : req.body.store_name, //추후 변경
                 // store_xpos : req.body.store_xpos,
                 // store_ypos : req.body.store_ypos,
                 // store_address : req.body.store_address
              }
         })
-        const recieptAll = req.body.recieptAll; // 영수증 ocr 처리 결과
+        const recieptAll = visionOCR(img); // 영수증 ocr 처리 결과
+        console.log('recieptAll');
 
-        if(recieptAll.includes('store.name')){
+        if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_name)){
             res.status(200).json({message : 'Receipt Verified'});
         }else{
-            console.log('');
+            console.log('Receipt recognition failure');
             res.status(200).send({ message: "Receipt recognition failure. TRY ANGIN.."});
         }
     } catch(error){
