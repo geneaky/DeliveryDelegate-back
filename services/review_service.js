@@ -1,13 +1,12 @@
-const httpError = require('http-errors');
+const path = require('path');
+require('dotenv').config({ path: __dirname + '/develop.env' });
 const jwt = require('../api/middlewares/jwt');
 const { Review,User,Thumb,Store } = require('../models');
 const Sequelize = require('sequelize');
 const vision = require('@google-cloud/vision');
 
 
-
-
-let visionOCR = async (img) => {
+const visionOCR = async (img) => {
     const client = new vision.ImageAnnotatorClient();
     let string = '';
     const [result] = await client.textDetection(img);
@@ -15,32 +14,36 @@ let visionOCR = async (img) => {
     console.log('Text:');
     detections.forEach(text => string += text.description);
      
-    return string;
+    //return string;
 }
 
 
 const recieptAuth = async (req, res, next) => {
     try{
-        const img = req.body.pic; //android img
-
+        let img = req.file.path;//req.file.path; //android img
+        if (img === undefined) {
+            return res.status(500).send({ message: "undefined image file"});
+        }
+        const type = req.file.mimetype.split('/')[1];
+        if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
+            return res.status(500).send({ message: "Unsupported file type"});
+        }
         const store = await Store.findOne({
             where: {
-                store_id : req.params.storeid,
-                store_name : req.body.store_name, //추후 변경
-                // store_xpos : req.body.store_xpos,
-                // store_ypos : req.body.store_ypos,
-                // store_address : req.body.store_address
+                store_id : req.params.storeid
              }
         })
-        const recieptAll = visionOCR(img); // 영수증 ocr 처리 결과
-        console.log('recieptAll');
-
-        if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_name)){
-            res.status(200).json({message : 'Receipt Verified'});
+        const recieptAll = await visionOCR("C:\Users\pc\Pictures\kk.png")
+        console.log(recieptAll)
+       
+        if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
+        res.status(200).json({message : 'Receipt Verified'});
         }else{
-            console.log('Receipt recognition failure');
-            res.status(200).send({ message: "Receipt recognition failure. TRY ANGIN.."});
-        }
+        console.log('Receipt recognition failure');
+        res.status(200).send({ message: "Receipt recognition failure. TRY ANGIN.."});
+    }
+        
+        
     } catch(error){
         res.status(500).send({ message: error.message });
     }

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "omega-post-351407",
+  "private_key_id": "78cb32591f28ca04960bbedcf6c653737e9b522c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCkZNK27oz9yD+9\n3Pst7dAM3RFh9J/DpDEr92uMxuJgzallz7nyl7JggoRctSRmxnP2IESQWuF38kzq\nHbbFBOSX22x7E/wENGKhESAh4UMyeOTxyQNFtwVOF0Gzbt8ZSPm1zb1RLZSeOIMC\nZFWl86jaN3pMiB/Vt/Ncx8OO3+Ol1PS9macdDO+rKJ9+4kxgZQc1Iz0SigdGgrwF\ntPWPUHSZwcwXTQRQq8icnz/jzAICqMgvPX/cx+HF9H6uoxX0isLcihsx1ETRFf/Q\n/PKTmhhEVVX6OCW5D7TMpNbHmKAONxQ6BiMbO4vKWLacBywHHv2d4UrijjX4sIPa\niqSIQnTPAgMBAAECggEAH1w0bj03nDoVHs0HBY32QF3zsPIPgCzUTITYeXR/PuQ8\nynVEDakumAaN5XmQxiJZgLxLGBaeKFmKnqaodREn4mgzW49GZi7wGbXAoXXtcbVq\nR02HWEc/tdPt7qLZ4GLxb+MdmFzPmxdAtrYZOJ0wuuAWbn8RQ53hyPM6tQi0zq9w\nu9hL2DsNZZe+AVTb3pWqa44JmobN7RLtEPX/696dy0h7v5ReaNqC6Ko2QMAkHfvG\nLYvRt8esj/YKo0ypMEwgWf3RXRoj4j3IJH8qVXpRrGZwzwVRQmu2lOBUC75FUZsN\nzwrA4eIpYAgEWEdLvLD9G0VmFQfcgK+2k5jQjNpfkQKBgQDdDG9OhY2kqoHLyBwV\nQWxQ1nAViYkjV5J2Rc6ofaRyplohGPyFwKPJAGPq62qfxN2PrlDxTqQFnmIMs7Tu\nodjAPO6zYDPWy9x9cMwtoo3NAJpfIrI+YnCGJI6h+SY2zK3SqNpavSlgoOVZqGoM\njHYN8udexBje1X/SXDz+TWPeXQKBgQC+YyDE8Z4OgEe9yClrwe9QP3vib2YzLkau\nbc6cpO3zFjWvAWyrqxUmPworQon95yN42vsRxz3bwKTHtZHLKHyDApaLl+R5Zcy6\no9wZ/R2s9vsyB9h1x6ImvZGUg19tjwMvwBeYHHuuC5ErZFMzoOVDx+uFHL1OHdIl\nnEswaef1GwKBgHPRahh4PWjDtdIx/RTd/IS2dm+yalpMLf8uQENj4V/47UxeLSFf\nd/F+9NtHkcw4d+YqbVqh26rd+32wQuKthkXjJyZxB3hJxDMtgK2AeE+rOzcRlNa+\n+TovuVQAmRcpUwIHWrEkX6Ozabf6V+ZPSiOw2615jZZjwt9TWNndbrA5AoGAX6+e\nhp0Q3STn6aAyATCFQIXHk7R9XvfBGmWh0+SomuXssTo8DcN8a65/Q+K7S9rhXxpf\n2T2T/2BA8QZ2ce61NXsVgq8ia0kYri0wr/cg9Q9kjG6ZAgkFnAbmpgeo7H1WEqeu\ntAqMtpqlqXNQxb/1ui0+V7ZsBljCh5iXyYtQw0UCgYEAp/tkeY8tJCQxqIcwpJYd\n0Nn2MZ/vV71bfMdi78tUuo9AyeYsu3vpS8ov9zt14aCO9xSE0rzMMGEd0O4F2HrS\nZ6WliLzveUb7ryJPLplDPAI6pgZrduDCX45BY9+jqyrbfKyQC6ASXGCUCCLyBqxS\nsjhpyp3azAEHu1Y9sUjcjV4=\n-----END PRIVATE KEY-----\n",
+  "client_email": "daldaepyo@omega-post-351407.iam.gserviceaccount.com",
+  "client_id": "110506614488923183526",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/daldaepyo%40omega-post-351407.iam.gserviceaccount.com"
+}

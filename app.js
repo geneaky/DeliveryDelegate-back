@@ -29,8 +29,8 @@ app.use(express.json());
 
 app.use('/users', usersRouter);
 app.use('/store',authenticate, storeRouter);
-//app.use('/store', storeRouter);
- app.use('/review',authenticate, reviewRouter);
+app.use('/store', storeRouter);
+//app.use('/review',authenticate, reviewRouter);
 app.use('/review', reviewRouter);
 app.use('/map', mapRouter);
 
@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
 });
 
 
-app.listen(8080,() => {
+app.listen(3000,() => {
   console.log('Server Start');
 });
 
