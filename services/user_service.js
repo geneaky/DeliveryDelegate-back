@@ -16,17 +16,14 @@ const registerUser = async (req, res, next) => {
     await User.create({
         phone_number: req.body.phone_number,
         password: hashPassword(req.body.password),
-        address: req.body.address,
         nickname: req.body.nickname,
-        self_posx: req.body.self_posx,
-        self_posy: req.body.self_posy,
         exemption_count : 0
 
-    }).catch(() => {
+    }).then(() => {
+        return res.status(200).json({message : 'account created'});
+    }).catch((err) => {
         return next(httpError(500, 'Server Error'));
     });
-
-    res.status(200).json({message : 'account created'});
 }
 
 const hashPassword = (password) => {
@@ -39,12 +36,12 @@ const findUser = async (req, res, next) => {
             phone_number: req.body.phone_number,
             password: hashPassword(req.body.password)}
     }).catch((err) => {
-        next(err);
+        return next(err);
     });
 }
 
 
-/*const login = async (req, res, next) => {
+const login = async (req, res, next) => {
     let authenticatedUser = await findUser(req, res, next);
 
     if(authenticatedUser) {
@@ -55,27 +52,16 @@ const findUser = async (req, res, next) => {
         });
     }
 
-    next(httpError(400, 'UnAuthorized User Request'));
-}*/
-
-const login = async (req, res, next) => {
-    let authenticatedUser = await findUser(req, res, next);
-    console.log(authenticatedUser);
-    if(authenticatedUser) {
-        return res.status(200).json({
-            user: authenticatedUser,
-        });
-    }
-
-    next(httpError(400, 'UnAuthorized User Request'));
+    return next(httpError(400, 'UnAuthorized User Request'));
 }
 
 const setUserTown = async (req, res, next) => {
     const jwtToken = req.header('token');
     const user = await jwt.verify(jwtToken);
 
-    User.update({
-        address: req.body.address
+    await User.update({
+        self_posx: req.body.self_posx,
+        self_posy: req.body.self_posy
     },{
         where:{
             user_id : user.id
@@ -83,7 +69,7 @@ const setUserTown = async (req, res, next) => {
     }).then((user) => {
         return res.status(200).end();
     }).catch((err) => {
-        next(httpError(500, 'Server Error'));
+        return next(httpError(500, 'Server Error'));
     });
 }
 

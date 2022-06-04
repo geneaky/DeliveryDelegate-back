@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon socket.js"
   },
   "dependencies": {
     "@google-cloud/vision": "^2.4.2",
@@ -18,6 +18,7 @@
     "nodemon": "^2.0.16",
     "rand-token": "^1.0.1",
     "sequelize": "^6.19.0",
-    "socket.io": "^4.5.0"
+    "socket.io": "^4.5.1",
+    "uuid": "^8.3.2"
   }
 }

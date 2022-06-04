@@ -1,36 +1,28 @@
 const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 
-const User = (sequelize) => sequelize.define('User',{
-    user_id: {
+const Order = (sequelize) => sequelize.define('Order',{
+    order_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    phone_number: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    nickname: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    self_posx: {
+    store_name: {
         type: DataTypes.STRING,
         allowNull: true
     },
-    self_posy: {
+    mapx: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
     },
-    exemption_count: {
-        type: DataTypes.INTEGER,
+    mapy: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    detail: {
+        type: DataTypes.STRING,
         allowNull: true
     }
-});
+})
 
-module.exports = User;
+module.exports = Order;
