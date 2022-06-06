@@ -7,6 +7,7 @@ const usersRouter = require('./api/routes/users');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
 const mapRouter = require('./api/routes/map');
+const fs = require('fs');
 
 
 dotenv.config();
@@ -42,6 +43,9 @@ app.use((err, req, res, next) => {
 
 
 app.listen(8080,() => {
+  const dir = './uploads';
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+  
   console.log('Server Start');
 });
 
