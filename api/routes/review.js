@@ -4,19 +4,26 @@ const router = express.Router();
 const multer = require('multer');
 
 const upload = multer({
-    dest:'../../public/tempIMG'
-});
+    storage: multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, '../../public');
+      },
+      filename: function (req, file, cb) {
+        cb(null, "recieptTest");
+      }
+    }),
+  });
 
-router.post('/:storeid/post', async function(req, res, next) {
+router.post('/post', async function(req, res, next) {
     reviewService.writwReview(req, res, next);
 });
 
-router.post('/:storeid/reciept',  function(req, res, next) { //upload.single('file'),
+router.post('/reciept',  upload.single('file'), function(req, res, next) { //
     reviewService.recieptAuth(req, res, next);
 });
 
 
-router.get('/:storeid/thumb', async function(req, res, next) {
+router.get('/thumb', async function(req, res, next) {
     reviewService.thumbUp(req, res, next);
 });
 

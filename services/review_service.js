@@ -13,37 +13,47 @@ const visionOCR = async (img) => {
     const detections = result.textAnnotations;
     console.log('Text:');
     detections.forEach(text => string += text.description);
-     
-    //return string;
+    console.log('OCR 성공');
+    return string;
 }
 
 
 const recieptAuth = async (req, res, next) => {
     try{
-        let img = req.file.path;//req.file.path; //android img
-        if (img === undefined) {
+
+        // test 1 : token 받아오는지
+        const jwtToken = req.header('token');
+        const user = await jwt.verify(jwtToken);
+        console.log("uid : ",user.id);
+
+        // test 2 : img 받아오는지
+        let img = req.file;
+        console.log(img)
+
+        if (img.path === undefined) {
             return res.status(500).send({ message: "undefined image file"});
         }
         const type = req.file.mimetype.split('/')[1];
         if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
             return res.status(500).send({ message: "Unsupported file type"});
         }
-        const store = await Store.findOne({
-            where: {
-                store_id : req.params.storeid
-             }
-        })
-        const recieptAll = await visionOCR("C:\Users\pc\Pictures\kk.png")
+
+        // test 3 : ocr 되는지
+        const recieptAll = await visionOCR(img.path)
         console.log(recieptAll)
        
+        /*
+          const store = await Store.findOne({
+            where: {
+                store_name : req.body.name
+             }
+        })
         if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
         res.status(200).json({message : 'Receipt Verified'});
         }else{
         console.log('Receipt recognition failure');
-        res.status(200).send({ message: "Receipt recognition failure. TRY ANGIN.."});
-    }
-        
-        
+        res.status(200).send({ message: "Receipt recognition failure. TRY ANGIN.."});*/
+
     } catch(error){
         res.status(500).send({ message: error.message });
     }
@@ -59,7 +69,7 @@ const writwReview = async (req, res, next) => {
         // 리뷰등록
         await Review.create({
             UserUserId : user.id, 
-            StoreStoreId :req.params.storeid,
+            StoreStoreId :req.body.storeid,
             content: req.body.body,
         });
        
