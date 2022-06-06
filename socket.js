@@ -3,6 +3,7 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 const jwt = require('./api/middlewares/jwt');
 const {User, Delegator, Order, Game} = require('./models');
+const fs = require('fs');
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
@@ -153,5 +154,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 });
 
 httpServer.listen(8080,() => {
+    const dir = './uploads';
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
     console.log('Server Start');
 });

@@ -41,11 +41,4 @@ app.use((err, req, res, next) => {
   res.status(err.status|| 500).send(err.message);
 });
 
-
-app.listen(8080,() => {
-  const dir = './uploads';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-  
-  console.log('Server Start');
-});
-
+module.exports = app;
