@@ -37,11 +37,13 @@ const recieptAuth = async (req, res, next) => {
         if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
             return res.status(500).send({ message: "Unsupported file type"});
         }
-
+        
         // test 3 : ocr 되는지
         const recieptAll = await visionOCR(img.path)
         console.log(recieptAll)
        
+
+        res.status(200).send({ message: `TOKEN userid: ${user.id} IMG 객체 : ${img} OCR 결과 : ${recieptAll}`});
         /*
           const store = await Store.findOne({
             where: {
