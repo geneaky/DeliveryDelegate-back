@@ -30,8 +30,8 @@ app.use(express.json());
 app.use('/users', usersRouter);
 app.use('/store',authenticate, storeRouter);
 app.use('/store', storeRouter);
-//app.use('/review',authenticate, reviewRouter);
-app.use('/review', reviewRouter);
+app.use('/review',authenticate, reviewRouter);
+//app.use('/review', reviewRouter);
 app.use('/map', mapRouter);
 
 
