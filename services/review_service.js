@@ -7,6 +7,8 @@ const vision = require('@google-cloud/vision');
 
 
 const visionOCR = async (img) => {
+    try{
+    console.log("OCR들어옴");
     const client = new vision.ImageAnnotatorClient();
     let string = '';
     const [result] = await client.textDetection(img);
@@ -15,12 +17,14 @@ const visionOCR = async (img) => {
     detections.forEach(text => string += text.description);
     console.log('OCR 성공');
     return string;
+    } catch(err){
+        return err;
+    }
 }
 
 
 const recieptAuth = async (req, res, next) => {
     try{
-
         // test 1 : token 받아오는지
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
@@ -41,9 +45,11 @@ const recieptAuth = async (req, res, next) => {
         // test 3 : ocr 되는지
         const recieptAll = await visionOCR(img.path)
         console.log(recieptAll)
-       
-
-        res.status(200).send({ message: `TOKEN userid: ${user.id} IMG 객체 : ${img} OCR 결과 : ${recieptAll}`});
+        res.status(201).send({
+            user : `token 검증된 사용자 id:  ${user.id}`,
+            ocr : `OCR 처리 결과 : ${recieptAll}`,
+            fileInfo: req.file
+        });
         /*
           const store = await Store.findOne({
             where: {
