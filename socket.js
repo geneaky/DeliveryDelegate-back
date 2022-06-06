@@ -155,6 +155,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
 httpServer.listen(8080,() => {
     const dir = './uploads';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    if (!fs.existsSync(dir)){fs.mkdirSync(dir);}
+
     console.log('Server Start');
 });

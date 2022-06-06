@@ -18,7 +18,6 @@ router.post('/post', async function(req, res, next) {
 });
 
 router.post('/reciept',  upload.single('file'), function(req, res, next) { //
-    console.log("multer됨");
     reviewService.recieptAuth(req, res, next);
 });
 

@@ -8,7 +8,7 @@ const vision = require('@google-cloud/vision');
 
 const visionOCR = async (img) => {
     try{
-    console.log("OCR들어옴");
+    console.log("OCR");
     const client = new vision.ImageAnnotatorClient();
     let string = '';
     const [result] = await client.textDetection(img);
@@ -28,15 +28,16 @@ const recieptAuth = async (req, res, next) => {
         // test 1 : token 받아오는지
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
-        console.log("uid : ",user.id);
+        console.log("(token) user id : ",user.id);
 
         // test 2 : img 받아오는지
         let img = req.file;
-        console.log(img)
+        console.log("req.file : ",img)
 
-        if (img.path === undefined) {
-            return res.status(500).send({ message: "undefined image file"});
+        if (img == undefined) {
+            return res.status(500).send({ message: "undefined image file(no req.file) "});
         }
+
         const type = req.file.mimetype.split('/')[1];
         if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
             return res.status(500).send({ message: "Unsupported file type"});
@@ -44,7 +45,7 @@ const recieptAuth = async (req, res, next) => {
         
         // test 3 : ocr 되는지
         const recieptAll = await visionOCR(img.path)
-        console.log(recieptAll)
+        console.log("ocr result : ",recieptAll)
         res.status(201).send({
             user : `token 검증된 사용자 id:  ${user.id}`,
             ocr : `OCR 처리 결과 : ${recieptAll}`,
