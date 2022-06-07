@@ -49,10 +49,10 @@ const recieptAuth = async (req, res, next) => {
             }
         })
         if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
-            res.status(200).json({message : 'Receipt Verified'});
+            res.status(200).json({message : 'Reciept Verified'});
         }else{
             console.log('Receipt recognition failure');
-            res.status(200).send({ message: "Receipt recognition failure"});
+            res.status(200).send({ message: "Reciept recognition failure"});
         }
         /*res.status(201).send({
             user : `token 검증된 사용자 id:  ${user.id}`,
