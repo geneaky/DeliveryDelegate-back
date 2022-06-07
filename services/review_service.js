@@ -25,45 +25,41 @@ const visionOCR = async (img) => {
 
 const recieptAuth = async (req, res, next) => {
     try{
-        // test 1 : token 받아오는지
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
         console.log("(token) user id : ",user.id);
 
-        // test 2 : img 받아오는지
         let img = req.file;
         console.log("req.file : ",img)
 
         if (img == undefined) {
             return res.status(500).send({ message: "undefined image file(no req.file) "});
         }
-
         const type = req.file.mimetype.split('/')[1];
         if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
             return res.status(500).send({ message: "Unsupported file type"});
         }
-        
-        // test 3 : ocr 되는지
+    
         const recieptAll = await visionOCR(img.path)
         console.log("ocr result : ",recieptAll)
-        res.status(201).send({
+
+        const store = await Store.findOne({
+        where: {
+            store_id : req.body.store_id
+            }
+        })
+        if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
+            res.status(200).json({message : 'Receipt Verified'});
+        }else{
+            console.log('Receipt recognition failure');
+            res.status(200).send({ message: "Receipt recognition failure"});
+        }
+        /*res.status(201).send({
             user : `token 검증된 사용자 id:  ${user.id}`,
             ocr : `OCR 처리 결과 : ${recieptAll}`,
             fileInfo: req.file
-        });
-        /*
-          const store = await Store.findOne({
-            where: {
-                store_name : req.body.name
-             }
-        })
-        if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
-        res.status(200).json({message : 'Receipt Verified'});
-        }else{
-        console.log('Receipt recognition failure');
-        res.status(200).send({ message: "Receipt recognition failure. TRY ANGIN.."});*/
-
-    } catch(error){
+        });*/   
+    } catch(error) {
         res.status(500).send({ message: error.message });
     }
 };
@@ -72,7 +68,7 @@ const writwReview = async (req, res, next) => {
     try{
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
-        console.log("uid : ",user.id);
+        console.log("(token) user id : ",user.id);
         
         
         // 리뷰등록
@@ -94,11 +90,11 @@ const writwReview = async (req, res, next) => {
                 exemption_count: Sequelize.literal('exemption_count + 1') }, 
                 { where: { user_id: user.id } 
             });
-            // res.status(200).json({message : 'Provide exemption '});
+            console.log("Provide exemption");
         }
-
         res.status(200).json({message : 'Review registered'});
-    } catch(error){
+
+    } catch(error) {
         res.status(500).send({ message: error.message });
     };
 };
@@ -108,7 +104,7 @@ const thumbUp = async (req,res,next) =>{
     try{
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
-        console.log("uid : ",user.id);
+        console.log("(token) user id : ",user.id);
 
         let ReviewReviewId = await Review.findOne({
             atterbutes : ['review_id'],
@@ -148,7 +144,7 @@ const thumbUp = async (req,res,next) =>{
             res.status(200).json({message : 'thumb Down '});
         }
         else { // 좋아요
-            res.status(200).json({message : 'thumb UP ! '});
+            res.status(201).json({message : 'thumb UP ! '});
         }
 
     } catch(error){
