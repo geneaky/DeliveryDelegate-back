@@ -4,9 +4,7 @@ const storeService = require('../../services/store_service');
 
 
 router.get('/',(req,res,next) => {
-    res.json({
-        test: "success"
-    })
+    storeService.findStore(req, res, next);
 });
 
 router.post('/register', (req, res, next) => {

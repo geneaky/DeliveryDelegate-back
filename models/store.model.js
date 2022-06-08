@@ -11,11 +11,11 @@ const Store = (sequelize) => sequelize.define('Store',{
         type: DataTypes.STRING,
         allowNull: false
     },
-    store_xpos: {
+    store_posx: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    store_ypos: {
+    store_posy: {
         type: DataTypes.STRING,
         allowNull: false
     },
