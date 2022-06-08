@@ -44,9 +44,10 @@ const recieptAuth = async (req, res, next) => {
         const recieptAll = await visionOCR(img.path)
         console.log("ocr result : ",recieptAll)
 
+        console.log(req.body.store_id)
         const store = await Store.findOne({
         where: {
-            store_id : req.body.store_id
+            store_id : req.body.store_id.split('y')[1]
             }
         })
         if (store === undefined){
