@@ -4,9 +4,10 @@ const {Store, Review} = require('../models');
 
 const findStore = async (req, res, next) => {
     await Store.findOne({
-        store_name: req.query.store_name,
-        store_posx: req.query.store_posx,
-        store_posy: req.query.store_posy,
+        where: {
+            store_name: req.query.store_name,
+            store_posx: req.query.store_posx,
+            store_posy: req.query.store_posy}
     }).then((store) => {
         if(store) {
             return res.status(200).json({ store_id: store.store_id, message: "store existed"});
