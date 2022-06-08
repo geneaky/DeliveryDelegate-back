@@ -5,11 +5,12 @@ const { Review,User,Thumb,Store } = require('../models');
 const Sequelize = require('sequelize');
 const vision = require('@google-cloud/vision');
 
-
 const visionOCR = async (img) => {
     try{
     console.log("OCR");
-    const client = new vision.ImageAnnotatorClient();
+    const client = new vision.ImageAnnotatorClient({
+        keyFilename:"../new-vision-key.json"
+    });
     let string = '';
     const [result] = await client.textDetection(img);
     const detections = result.textAnnotations;
@@ -48,6 +49,9 @@ const recieptAuth = async (req, res, next) => {
             store_id : req.body.store_id
             }
         })
+        if (store === undefined){
+            return res.status(500).send({ message: "can't find store"});
+        }
         if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
             res.status(200).json({message : 'Reciept Verified'});
         }else{
