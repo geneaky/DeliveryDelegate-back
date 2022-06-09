@@ -30,8 +30,8 @@ const recieptAuth = async (req, res, next) => {
         const user = await jwt.verify(jwtToken);
         console.log("(token) user id : ",user.id);
 
-        let img = req.file;
-        console.log("req.file : ",img)
+        let img = req.body.file;
+        console.log("req.body.file : ",img)
 
         if (img == undefined) {
             return res.status(500).send({ message: "undefined image file(no req.file) "});
