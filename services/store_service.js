@@ -12,7 +12,7 @@ const findStore = async (req, res, next) => {
         if(store) {
             return res.status(200).json({ store_id: store.store_id, message: "store existed"});
         }
-        return res.status(404).json({ message: "store not existed"});
+        return res.status(400).json({ message: "store not existed"});
     }).catch((err) => {
         next(httpError(500, err.message));
     })
