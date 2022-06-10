@@ -9,7 +9,7 @@ const visionOCR = async (img) => {
     try{
     console.log("OCR");
     const client = new vision.ImageAnnotatorClient({
-        keyFilename:"../new-vision-key.json"
+        keyFilename:"./new-vision-key.json"
     });
     let string = '';
     const [result] = await client.textDetection(img);
@@ -44,7 +44,7 @@ const recieptAuth = async (req, res, next) => {
         const recieptAll = await visionOCR(img.path)
         console.log("ocr result : ", recieptAll)
 
-        console.log(req.body.store_id)
+        console.log("req.body.store_id : ", req.body.store_id)
         // 만약 okhttp.RequestBody[id] 이런 식으로 나온다면 
         // store_id : req.body.store_id.split('y')[1] 로 사용
         const store = await Store.findOne({
@@ -52,20 +52,17 @@ const recieptAuth = async (req, res, next) => {
             store_id : req.body.store_id
             }
         })
+
+        console.log(store)
         if (store === undefined){
             return res.status(500).send({ message: "can't find store"});
         }
         if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
-            res.status(200).json({message : 'Reciept Verified'});
+            res.status(200).send({ message: "Reciept Verified"});
         }else{
             console.log('Receipt recognition failure');
             res.status(200).send({ message: "Reciept recognition failure"});
         }
-        /*res.status(201).send({
-            user : `token 검증된 사용자 id:  ${user.id}`,
-            ocr : `OCR 처리 결과 : ${recieptAll}`,
-            fileInfo: req.file
-        });*/   
     } catch(error) {
         res.status(500).send({ message: error.message });
     }
