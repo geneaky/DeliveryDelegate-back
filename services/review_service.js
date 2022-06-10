@@ -30,8 +30,8 @@ const recieptAuth = async (req, res, next) => {
         const user = await jwt.verify(jwtToken);
         console.log("(token) user id : ",user.id);
 
-        let img = req.body.file;
-        console.log("req.body.file : ",img)
+        let img = req.file;
+        console.log("(multipart) req.file : ",img)
 
         if (img == undefined) {
             return res.status(500).send({ message: "undefined image file(no req.file) "});
@@ -42,12 +42,14 @@ const recieptAuth = async (req, res, next) => {
         }
     
         const recieptAll = await visionOCR(img.path)
-        console.log("ocr result : ",recieptAll)
+        console.log("ocr result : ", recieptAll)
 
         console.log(req.body.store_id)
+        // 만약 okhttp.RequestBody[id] 이런 식으로 나온다면 
+        // store_id : req.body.store_id.split('y')[1] 로 사용
         const store = await Store.findOne({
         where: {
-            store_id : req.body.store_id.split('y')[1]
+            store_id : req.body.store_id
             }
         })
         if (store === undefined){
