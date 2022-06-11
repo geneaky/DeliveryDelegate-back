@@ -34,11 +34,11 @@ const recieptAuth = async (req, res, next) => {
         console.log("(multipart) req.file : ",img)
 
         if (img === undefined) {
-            return res.status(500).send({ message: "undefined image file(no req.file) "});
+            return res.status(500).json({ message: "undefined image file(no req.file) "});
         }
         const type = req.file.mimetype.split('/')[1];
         if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
-            return res.status(500).send({ message: "Unsupported file type"});
+            return res.status(500).json({ message: "Unsupported file type"});
         }
     
         const recieptAll = await visionOCR(img.path)
@@ -54,19 +54,19 @@ const recieptAuth = async (req, res, next) => {
 
         console.log(store)
         if (store === undefined){
-            return res.status(500).send({ message: "can't find store"});
+            return res.status(500).json({ message: "can't find store"});
         }
         if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
-            // res.status(200).send({ message: "Reciept Verified"});
+            // res.status(200).json({ message: "Reciept Verified"});
         }else{
             console.log('Receipt recognition failure');
-            // res.status(200).send({ message: "Reciept recognition failure"});
+            // res.status(200).json({ message: "Reciept recognition failure"});
         }
 
-        res.status(200).send({ message: recieptAll });
+        res.status(200).json({ message: recieptAll });
 
     } catch(error) {
-        res.status(500).send({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -101,7 +101,7 @@ const writwReview = async (req, res, next) => {
         res.status(200).json({message : 'Review registered'});
 
     } catch(error) {
-        res.status(500).send({ message: error.message });
+        res.status(500).json({ message: error.message });
     };
 };
     
@@ -154,7 +154,7 @@ const thumbUp = async (req,res,next) =>{
         }
 
     } catch(error){
-        res.status(500).send({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
     
 };
