@@ -33,7 +33,7 @@ const recieptAuth = async (req, res, next) => {
         let img = req.file;
         console.log("(multipart) req.file : ",img)
 
-        if (img == undefined) {
+        if (img === undefined) {
             return res.status(500).send({ message: "undefined image file(no req.file) "});
         }
         const type = req.file.mimetype.split('/')[1];
@@ -45,6 +45,7 @@ const recieptAuth = async (req, res, next) => {
         console.log("ocr result : ", recieptAll)
 
         console.log("req.body.store_id : ", req.body.store_id)
+
         const store = await Store.findOne({
         where: {
             store_id : req.body.store_id
