@@ -33,7 +33,7 @@ const recieptAuth = async (req, res, next) => {
         let img = req.file;
         console.log("(multipart) req.file : ",img)
 
-        if (img == undefined) {
+        if (img === undefined) {
             return res.status(500).send({ message: "undefined image file(no req.file) "});
         }
         const type = req.file.mimetype.split('/')[1];
@@ -47,9 +47,10 @@ const recieptAuth = async (req, res, next) => {
         console.log("req.body.store_id : ", req.body.store_id)
         // 만약 okhttp.RequestBody[id] 이런 식으로 나온다면 
         // store_id : req.body.store_id.split('y')[1] 로 사용
+        console.log("store_id type" ,typeof (req.body.store_id))
         const store = await Store.findOne({
         where: {
-            store_id : Number(req.body.store_id)
+            store_id : req.body.store_id
             }
         })
 
