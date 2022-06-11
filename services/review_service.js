@@ -49,7 +49,7 @@ const recieptAuth = async (req, res, next) => {
         // store_id : req.body.store_id.split('y')[1] 로 사용
         const store = await Store.findOne({
         where: {
-            store_id : req.body.store_id
+            store_id : Number(req.body.store_id)
             }
         })
 
