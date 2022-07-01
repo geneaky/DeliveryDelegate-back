@@ -7,6 +7,7 @@ const usersRouter = require('./api/routes/users');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
 const mapRouter = require('./api/routes/map');
+const gameRouter = require('./api/routes/game');
 const fs = require('fs');
 
 
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use('/users', usersRouter);
 app.use('/store',authenticate, storeRouter);
 app.use('/review',authenticate, reviewRouter);
+app.use('/game',authenticate, gameRouter);
 app.use('/map',authenticate, mapRouter);
 
 
