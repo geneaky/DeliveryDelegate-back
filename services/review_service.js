@@ -100,7 +100,7 @@ const writwReview = async (req, res, next) => {
             if (isBadword(req.body.body) === "pass"){
                 await Review.create({
                     UserUserId : user.id, 
-                    StoreStoreId :req.body.storeid,
+                    StoreStoreId :req.body.store_id,
                     content: req.body.body,
                 });
             }
@@ -117,7 +117,7 @@ const writwReview = async (req, res, next) => {
             if (isBadword(req.body.body) === "pass"){
                 await Review.create({
                 UserUserId : user.id, 
-                StoreStoreId :req.body.storeid,
+                StoreStoreId :req.body.store_id,
                 content: req.body.body,
                 image_path : img.path
                 });
@@ -159,7 +159,7 @@ const thumbUp = async (req,res,next) =>{
             atterbutes : ['review_id'],
             where: {
                 UserUserId : user.id, 
-                StoreStoreId :req.params.storeid,
+                StoreStoreId :req.body.store_id,
             }
         });
 
