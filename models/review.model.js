@@ -10,7 +10,12 @@ const Review = (sequelize) => sequelize.define('Review', {
     content: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    image_path:{
+        type: DataTypes.STRING,
+        allowNull: true
     }
+
 })
 
 module.exports = Review;
