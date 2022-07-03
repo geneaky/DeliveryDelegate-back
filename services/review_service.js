@@ -23,6 +23,23 @@ const visionOCR = async (img) => {
     }
 }
 
+const isBadword = async (str) =>{
+    try{
+        console.log("작성 내용 : ", str);
+        if(str.length < 10 ){
+            return "작성 내용 10글자 이하"
+        }
+        else if(str.includes('시발') || str.includes('새끼') || str.includes('바보')){
+            return "금칙어 사용" 
+        }
+        else {
+            return "pass"
+        }
+    } catch (err){
+        return err
+    }
+}
+
 
 const recieptAuth = async (req, res, next) => {
     try{
@@ -75,15 +92,41 @@ const writwReview = async (req, res, next) => {
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
         console.log("(token) user id : ",user.id);
+        let img = req.file;
+        console.log("(multipart) req.file : ",img)
+
+        if (img === undefined) {
+            // 리뷰등록 (사진X)
+            if (isBadword(req.body.body) === "pass"){
+                await Review.create({
+                    UserUserId : user.id, 
+                    StoreStoreId :req.body.storeid,
+                    content: req.body.body,
+                });
+            }
+            else {
+                res.status(500).json({ message: `${isBadword(req.body.body)} 사유로 리뷰 등록에 실패하였습니다.`});
+            }    
+        }
+        else {
+            const type = req.file.mimetype.split('/')[1];
+            if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
+                return res.status(500).json({ message: "Unsupported file type"});
+            }
+            // 리뷰등록 (사진o)
+            if (isBadword(req.body.body) === "pass"){
+                await Review.create({
+                UserUserId : user.id, 
+                StoreStoreId :req.body.storeid,
+                content: req.body.body,
+                image_path : img.path
+                });
+            }
+            else {
+                res.status(500).json({ message: `${isBadword(req.body.body)} 사유로 리뷰 등록에 실패하였습니다.`});
+            }     
+        }
         
-        
-        // 리뷰등록
-        await Review.create({
-            UserUserId : user.id, 
-            StoreStoreId :req.body.storeid,
-            content: req.body.body,
-        });
-       
         let counta = await Review.findAndCountAll({ // 리뷰 개수 조회
             where: {
                 UserUserId : user.id, 
@@ -91,7 +134,7 @@ const writwReview = async (req, res, next) => {
         });
     
         // 면제권 제공
-        if(counta.count % 10 === 0){
+        if(counta.count % 2 === 0){
             await User.update({ 
                 exemption_count: Sequelize.literal('exemption_count + 1') }, 
                 { where: { user_id: user.id } 
@@ -146,7 +189,7 @@ const thumbUp = async (req,res,next) =>{
 
 
         //좋아요 취소
-        if(thumbUp.thumb_up % 2 === 0){
+        if(thumbUp.thumb_up % 10 === 0){
             res.status(200).json({message : 'thumb Down '});
         }
         else { // 좋아요
