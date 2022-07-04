@@ -93,55 +93,49 @@ const writeReview = async (req, res, next) => {
         const user = await jwt.verify(jwtToken);
         console.log("(token) user id : ",user.id);
         let img = req.file;
-        console.log("(multipart) req.file : ",img)
-
-        if (img === undefined) {
-            // 리뷰등록 (사진X)
-            if (isBadword(req.body.body) === "pass"){
-                await Review.create({
-                    UserUserId : user.id, 
-                    StoreStoreId :req.body.store_id,
-                    content: req.body.body,
-                });
-            }
-            else {
-                res.status(500).json({ message: `${isBadword(req.body.body)} 사유로 리뷰 등록에 실패하였습니다.`});
-            }    
-        }
-        else {
+        console.log("(multipart) req.file : ",req.file)
+        console.log("(multipart) req.body : ",req.body)
+        let pass = await isBadword(req.body.body) 
+        if (typeof img == "undefined") { 
+            img = "";
+            console.log(img);
+        } else {
             const type = req.file.mimetype.split('/')[1];
             if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
                 return res.status(500).json({ message: "Unsupported file type"});
             }
-            // 리뷰등록 (사진o)
-            if (isBadword(req.body.body) === "pass"){
-                await Review.create({
-                UserUserId : user.id, 
-                StoreStoreId :req.body.store_id,
-                content: req.body.body,
-                image_path : img.path
-                });
-            }
-            else {
-                res.status(500).json({ message: `${isBadword(req.body.body)} 사유로 리뷰 등록에 실패하였습니다.`});
-            }     
+            img = req.file.path.toString()
         }
+   
+        // 리뷰등록
+        if (pass === "pass"){
+            await Review.create({
+                user_id : user.id, 
+                store_id :req.body.store_id,
+                content: req.body.body,
+                image_path : img
+                });
+        } else {
+            return res.status(500).json({ message: `[ ${pass} ] 사유로 리뷰 등록에 실패하였습니다.`});
+        }   
+ 
         
         let counta = await Review.findAndCountAll({ // 리뷰 개수 조회
             where: {
-                UserUserId : user.id, 
+                user_id : user.id, 
             }
         });
     
         // 면제권 제공
-        if(counta.count % 2 === 0){
+        if(counta.count % 10 === 0){
             await User.update({ 
                 exemption_count: Sequelize.literal('exemption_count + 1') }, 
                 { where: { user_id: user.id } 
             });
             console.log("Provide exemption");
         }
-        res.status(200).json({message : 'Review registered'});
+
+        return res.status(200).json({message : 'Review registered'});
 
     } catch(error) {
         res.status(500).json({ message: error.message });
@@ -155,25 +149,25 @@ const thumbUp = async (req,res,next) =>{
         const user = await jwt.verify(jwtToken);
         console.log("(token) user id : ",user.id);
 
-        let ReviewReviewId = await Review.findOne({
+        let goodReview = await Review.findOne({
             atterbutes : ['review_id'],
             where: {
-                UserUserId : user.id, 
-                StoreStoreId :req.body.store_id,
+                user_id : user.id, 
+                store_id :req.body.store_id,
             }
         });
 
-        console.log("ReviewReviewId",ReviewReviewId.review_id)
+        console.log("goodReview : ",goodReview.review_id)
         
         await Thumb.create({
-            ReviewReviewId : ReviewReviewId.review_id,
+            review_id : ReviewReviewId.review_id,
             thumb_up : 1,
         });
 
         let thumbUp = await Thumb.findOne({
             where: {
-                UserUserId : user.id, 
-                ReviewReviewId : ReviewReviewId.review_id,
+                user_id : user.id, 
+                review_id : goodReview.review_id,
             }
         });
            
@@ -189,11 +183,11 @@ const thumbUp = async (req,res,next) =>{
 
 
         //좋아요 취소
-        if(thumbUp.thumb_up % 10 === 0){
-            res.status(200).json({message : 'thumb Down '});
+        if(thumbUp.thumb_up % 2 === 0){
+            return res.status(200).json({message : 'thumb Down '});
         }
         else { // 좋아요
-            res.status(201).json({message : 'thumb UP ! '});
+            return res.status(200).json({message : 'thumb UP ! '});
         }
 
     } catch(error){
@@ -202,7 +196,18 @@ const thumbUp = async (req,res,next) =>{
     
 };
 
+const allReview = async (req, res, next) => {
+
+    const reviews = await Review.findAll()
+    .catch((err) => {
+        return next(err);
+    })
+
+    res.status(200).json({
+        message: reviews
+    });
+}
 
 
 
-module.exports = {writeReview, recieptAuth, thumbUp};
+module.exports = {writeReview, recieptAuth, thumbUp, allReview};
