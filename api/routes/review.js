@@ -23,7 +23,7 @@ const ocr_upload = multer({ storage: ocr_storage });
 const review_upload = multer({ storage: review_storage }); 
 
 router.post('/post', review_upload.single('file'), async function(req, res, next) {
-    reviewService.writwReview(req, res, next);
+    reviewService.writeReview(req, res, next);
 });
 
 router.post('/reciept',  ocr_upload.single('file'), function(req, res, next) { 

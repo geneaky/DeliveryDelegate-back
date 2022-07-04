@@ -87,7 +87,7 @@ const recieptAuth = async (req, res, next) => {
     }
 };
 
-const writwReview = async (req, res, next) => {
+const writeReview = async (req, res, next) => {
     try{
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
@@ -205,4 +205,4 @@ const thumbUp = async (req,res,next) =>{
 
 
 
-module.exports = {writwReview, recieptAuth, thumbUp};
+module.exports = {writeReview, recieptAuth, thumbUp};
