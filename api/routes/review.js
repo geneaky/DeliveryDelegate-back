@@ -2,22 +2,35 @@ const express = require('express');
 const reviewService = require('../../services/review_service');
 const router = express.Router();
 const multer = require('multer');
-const storage = multer.diskStorage({
+const ocr_storage = multer.diskStorage({
     destination:  (req, file, cb) => {
-      cb(null, 'uploads/')
+      cb(null, 'ocr_uploads/')
     },
     filename:  (req, file, cb) => {
-      cb(null, "recieptTest."+file.mimetype.split('/')[1])// 파일 원본이름 저장
+      cb(null, "recieptTest."+file.mimetype.split('/')[1])
+    }
+  })
+const review_storage = multer.diskStorage({
+    destination:  (req, file, cb) => {
+      cb(null, 'review_uploads/')
+    },
+    filename:  (req, file, cb) => {
+      cb(null, "reviewImage-"+new Date().valueOf()+"."+file.mimetype.split('/')[1])
     }
   })
 
-const upload = multer({ storage: storage }); 
+const ocr_upload = multer({ storage: ocr_storage }); 
+const review_upload = multer({ storage: review_storage }); 
 
-router.post('/post', async function(req, res, next) {
-    reviewService.writwReview(req, res, next);
+router.post('/post', review_upload.single('file'), async function(req, res, next) {
+    reviewService.writeReview(req, res, next);
 });
 
-router.post('/reciept',  upload.single('file'), function(req, res, next) { //
+router.get('/list', function(req, res, next) { 
+  reviewService.allReview(req, res, next);
+});
+
+router.post('/reciept',  ocr_upload.single('file'), function(req, res, next) { 
     reviewService.recieptAuth(req, res, next);
 });
 
