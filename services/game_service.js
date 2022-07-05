@@ -11,6 +11,7 @@ const createGame = async (req, res, next) => {
     const game = await Game.create({
         game_type: req.body.game_type,
         game_name: req.body.game_name,
+        game_main_text: req.body?.game_main_text,
         population: req.body.population,
         landmark_posx: req.body.landmark_posx,
         landmark_posy: req.body.landmark_posy,
@@ -19,7 +20,7 @@ const createGame = async (req, res, next) => {
         return next(err);
     });
 
-    const delegator = await Delegator.create({
+    await Delegator.create({
         game_id: game.game_id,
         user_id: user.id
     }).catch((err) => {

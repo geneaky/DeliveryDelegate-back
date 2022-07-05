@@ -15,6 +15,10 @@ const Game = (sequelize) => sequelize.define('Game',{
         type: DataTypes.STRING,
         allowNull: false
     },
+    game_main_text: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     population: {
         type: DataTypes.INTEGER,
         allowNull: false
