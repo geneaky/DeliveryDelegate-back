@@ -160,7 +160,7 @@ const thumbUp = async (req,res,next) =>{
         console.log("goodReview : ",goodReview.review_id)
         
         await Thumb.create({
-            review_id : ReviewReviewId.review_id,
+            review_id : goodReview.review_id,
             thumb_up : 1,
         });
 
