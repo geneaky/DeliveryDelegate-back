@@ -50,7 +50,7 @@ const recieptAuth = async (req, res, next) => {
         let img = req.file;
         console.log("(multipart) req.file : ",img)
 
-        if (img === undefined) {
+        if (typeof img === "undefined") {
             return res.status(500).json({ message: "undefined image file(no req.file) "});
         }
         const type = req.file.mimetype.split('/')[1];
@@ -63,24 +63,46 @@ const recieptAuth = async (req, res, next) => {
 
         console.log("req.body.store_id : ", req.body.store_id)
 
-        const store = await Store.findOne({
+        let store = await Store.findOne({
         where: {
             store_id : req.body.store_id
             }
+        }).catch((err) => {
+            next(httpError(500,err.message));
         })
+        
+        console.log("typeof store",typeof store);
 
-        console.log(store)
-        if (store === undefined){
+        if(typeof store === "undefined" || !store){
+            console.log("can't find store");
             return res.status(500).json({ message: "can't find store"});
         }
-        if(recieptAll.includes(store.store_name) || recieptAll.includes(store.store_address)){
-            // res.status(200).json({ message: "Reciept Verified"});
-        }else{
-            console.log('Receipt recognition failure');
-            // res.status(200).json({ message: "Reciept recognition failure"});
-        }
+        store = store.dataValues;
+        console.log("선택한 음식점 정보 :", store)
+        
 
-        res.status(200).json({ message: recieptAll });
+
+        let countSu = 0;
+
+        for(let i=0; i<store.store_name.length; i++){
+            if(recieptAll.includes(store.store_name[i])){
+                countSu += 1;
+            }
+            else {
+                console.log(store.store_name[i]," 는 영수증에 없음")
+            }
+        }
+         if(countSu > Math.floor(store.store_name.length/2)){
+            console.log("진짜 성공")
+            return res.status(200).json({ message: "Reciept Verified"});
+            
+         }
+         else {
+            console.log('Receipt recognition failure');
+            return res.status(200).json({ message: "Receipt verification failed"});
+         }
+        
+        //res.status(200).json({ message: recieptAll });
 
     } catch(error) {
         res.status(500).json({ message: error.message });
