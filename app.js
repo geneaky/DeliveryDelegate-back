@@ -9,7 +9,7 @@ const storeRouter = require('./api/routes/store');
 const mapRouter = require('./api/routes/map');
 const gameRouter = require('./api/routes/game');
 const fs = require('fs');
-
+const path = require('path');
 
 dotenv.config();
 
@@ -28,6 +28,7 @@ sequelize.sync({force:false})
 app.use(express.static('public'));
 app.use(logger('dev'));
 app.use(express.json());
+app.use('/review_uploads',express.static(path.join(__dirname,'review_uploads')));
 
 app.use('/users', usersRouter);
 app.use('/store',authenticate, storeRouter);
