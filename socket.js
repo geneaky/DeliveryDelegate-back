@@ -8,16 +8,9 @@ const fs = require('fs');
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
 
-// const gameSocketNameSpace = io.of('/game');
+const gameSocketNameSpace = io.of('/game');
 
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
-});
-
-/*gameSocketNameSpace.on('connection', (socket) => {
+gameSocketNameSpace.on('connection', (socket) => {
 
     //게임 참석
     socket.on('attend',async ({token,game_id,room_name, size,order}) => {
@@ -158,7 +151,7 @@ io.on('connection', (socket) => {
         }
     })
 
-})*/;
+});
 
 httpServer.listen(8080,() => {
     const dir1 = './ocr_uploads';
