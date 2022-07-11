@@ -15,6 +15,7 @@ gameSocketNameSpace.on('connection', (socket) => {
     console.log('hi');
     //게임 방장 생성 후 참가
     socket.on('attendMaster', async(message) => {
+        console.log(message);
         let {room_name} = JSON.parse(message);
 
         socket.join(room_name);
