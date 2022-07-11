@@ -1,7 +1,7 @@
 const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
 const { v4 } = require('uuid');
-const { Game, Delegator} = require('../models');
+const { Game, Delegator, Order} = require('../models');
 
 const createGame = async (req, res, next) => {
     const user = await jwt.verify(req.header('token'));
@@ -20,12 +20,23 @@ const createGame = async (req, res, next) => {
         return next(err);
     });
 
-    await Delegator.create({
+    const delegator = await Delegator.create({
         game_id: game.game_id,
         user_id: user.id
     }).catch((err) => {
         return next(err);
     });
+
+    //잠시 생략
+/*
+    await Order.create({
+        delegator_id: delegator.delegator_id,
+        store_name: req.body.order.store_name,
+        mapx: req.body.order.mapx,
+        mapy: req.body.order.mapy,
+        detail: req.body.order.detail,
+    })
+*/
 
     res.status(200).json({
         name: room_name,

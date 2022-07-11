@@ -8,12 +8,22 @@ const fs = require('fs');
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
 
-const gameSocketNameSpace = io.of('/game');
+const gameSocketNameSpace = io.of('/games');
 
 gameSocketNameSpace.on('connection', (socket) => {
 
+    console.log('hi');
+    //게임 방장 생성 후 참가
+    socket.on('attendMaster', async(message) => {
+        let {room_name} = JSON.parse(message);
+
+        socket.join(room_name);
+        socket.to(room_name).emit('attend', socket.id+'입장');
+    });
     //게임 참석
-    socket.on('attend',async ({token,game_id,room_name, size,order}) => {
+    socket.on('attend',async (message) => {
+        console.log(message);
+        let {token,game_id,room_name, size,order} = JSON.parse(message);
         const user = await jwt.verify(token);
 
         if((await gameSocketNameSpace.in(room_name).allSockets()).size === size) {
@@ -21,13 +31,11 @@ gameSocketNameSpace.on('connection', (socket) => {
             socket.emit('population', '인원 초과');
             return;
         }
-
         const delegator = await Delegator.create({
             game_id: game_id,
             user_id: user.id
         }).catch((err) => {
             console.log(err);
-            console.log(1);
             return socket.disconnect();
         });
 
@@ -39,7 +47,6 @@ gameSocketNameSpace.on('connection', (socket) => {
             detail: order.detail,
         }).catch((err) => {
             console.log(err);
-            console.log(2);
             return socket.disconnect();
         });
 

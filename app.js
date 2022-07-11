@@ -15,8 +15,7 @@ dotenv.config();
 
 const app = express();
 
-
-sequelize.sync({force:false})
+sequelize.sync({force:true})
     .then(() => {
       console.log('success connecting database');
     })
@@ -35,7 +34,6 @@ app.use('/store',authenticate, storeRouter);
 app.use('/review',authenticate, reviewRouter);
 app.use('/game',authenticate, gameRouter);
 app.use('/map',authenticate, mapRouter);
-
 
 app.use((err, req, res, next) => {
   console.log(err.message);
