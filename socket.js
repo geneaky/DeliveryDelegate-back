@@ -19,8 +19,8 @@ gameSocketNameSpace.on('connection', (socket) => {
         // let room_name = 'abcd';
 
         socket.join(room_name);
-        socket.emit('attend', socket.id + '입장');
-        socket.to(room_name).emit('attend', socket.id+'입장');
+        socket.emit('attend', socket?.id + '입장');
+        socket.to(room_name).emit('attend', socket?.id+'입장');
     });
 
     //게임 참석
@@ -31,7 +31,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
         if((await gameSocketNameSpace.in(room_name).allSockets()).size === size) {
             console.log('인원 초과');
-            socket.emit('population', '인원 초과');
+            socket?.emit('population', '인원 초과');
             return;
         }
         const delegator = await Delegator.create({
@@ -39,7 +39,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             user_id: user.id
         }).catch((err) => {
             console.log(err);
-            return socket.disconnect();
+            return socket?.disconnect();
         });
 
         await Order.create({
@@ -50,11 +50,11 @@ gameSocketNameSpace.on('connection', (socket) => {
             detail: order.detail,
         }).catch((err) => {
             console.log(err);
-            return socket.disconnect();
+            return socket?.disconnect();
         });
 
-        socket.join(room_name);
-        socket.to(room_name).emit('attend', socket.id+'입장');
+        socket?.join(room_name);
+        socket?.to(room_name).emit('attend', socket.id+'입장');
     });
 
     //안드로이드 게임 결과 전송
@@ -74,7 +74,7 @@ gameSocketNameSpace.on('connection', (socket) => {
         });
 
         if(ranking === 1) {
-            socket.to(room_name).emit('game_result', '대표자'+ nickname);
+            socket?.to(room_name).emit('game_result', '대표자'+ nickname);
         }
     });
 
@@ -97,7 +97,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             return next(err);
         });
 
-        socket.broadcast.to(room_name).emit('delegator_run_away', '대표자가 탈주했습니다');
+        socket?.broadcast.to(room_name).emit('delegator_run_away', '대표자가 탈주했습니다');
     });
 
     //대표자 다시 선정 -> 안드로이드에서 탈주 알림 받은 후 -> '대표자 다시 선정' 이벤트 호출
@@ -119,7 +119,7 @@ gameSocketNameSpace.on('connection', (socket) => {
         });
 
         if(new_ranking === 1) {
-            socket.to(room_name)
+            socket?.to(room_name)
                 .emit('delegator_re_ranking', {
                     msg:'대표자'+ nickname,
                     ranking: new_ranking
@@ -130,12 +130,12 @@ gameSocketNameSpace.on('connection', (socket) => {
 
     //대표자 랜드마크 도착 -> 안드로이드에서 대표자가 랜드마크에 도착하면 해당 이벤트를 참여자들에게 알림
     socket.on('delegator_arrive', ({token,game_id,room_name, }) => {
-        socket.broadcast.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
+        socket?.broadcast.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
     });
 
     //게임 종료
     socket.on('game_end',(socket) => {
-        socket.disconnect();
+        socket?.disconnect();
     });
 
     //게임 종료 후 게임 삭제 (대표자가 삭제) --> 게임 생성하자마자 삭제하는 경우도 있음
