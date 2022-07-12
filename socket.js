@@ -15,8 +15,8 @@ gameSocketNameSpace.on('connection', (socket) => {
     console.log('hi');
     //게임 방장 생성 후 참가
     socket.on('attendMaster', async(message) => {
-        // let {room_name} = JSON.parse(message);
-        let room_name = 'abcd';
+        let {room_name} = JSON.parse(message);
+        // let room_name = 'abcd';
 
         socket.join(room_name);
         socket.emit('attend', socket.id + '입장');
@@ -127,6 +127,7 @@ gameSocketNameSpace.on('connection', (socket) => {
         }
     });
 
+
     //대표자 랜드마크 도착 -> 안드로이드에서 대표자가 랜드마크에 도착하면 해당 이벤트를 참여자들에게 알림
     socket.on('delegator_arrive', ({token,game_id,room_name, }) => {
         socket.broadcast.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
@@ -161,6 +162,9 @@ gameSocketNameSpace.on('connection', (socket) => {
         }
     })
 
+    socket.on('disconnect', (socket) => {
+        console.log('bi');
+    })
 });
 
 httpServer.listen(8080,() => {
