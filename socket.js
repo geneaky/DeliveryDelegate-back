@@ -14,14 +14,21 @@ gameSocketNameSpace.on('connection', (socket) => {
 
     console.log('hi');
     //게임 방장 생성 후 참가
+<<<<<<< HEAD
     socket.on('attendMaster', async(message) => {
         // let {room_name} = JSON.parse(message);
         let room_name = 'abcd';
+=======
+    socket.on('attendMaster', async(room_name) => {
+        // console.log(message);
+        // let {room_name} = JSON.parse(message);
+>>>>>>> 129336d15b7066a47a071e0deb707c375cbbc4a8
 
         socket.join(room_name);
         socket.emit('attend', socket.id + '입장');
         socket.to(room_name).emit('attend', socket.id+'입장');
     });
+
     //게임 참석
     socket.on('attend',async (message) => {
         console.log(message);
