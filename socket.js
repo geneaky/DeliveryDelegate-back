@@ -15,9 +15,11 @@ gameSocketNameSpace.on('connection', (socket) => {
     console.log('hi');
     //게임 방장 생성 후 참가
     socket.on('attendMaster', async(message) => {
-        let {room_name} = JSON.parse(message);
+        // let {room_name} = JSON.parse(message);
+        let room_name = 'abcd';
 
         socket.join(room_name);
+        socket.emit('attend', socket.id + '입장');
         socket.to(room_name).emit('attend', socket.id+'입장');
     });
     //게임 참석
