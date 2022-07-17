@@ -14,8 +14,11 @@ const Order = require('./order.model')(sequelize);
 User.belongsToMany(Game, {through: Delegator, foreignKey: 'user_id'});
 Game.belongsToMany(User, {through: Delegator, foreignKey: 'game_id'});
 
-User.belongsToMany(Store, {through: Review, foreignKey: 'user_id'});
-Store.belongsToMany(User, {through: Review, foreignKey: 'store_id'});
+// User.belongsToMany(Store, {through: Review, foreignKey: 'user_id'});
+// Store.belongsToMany(User, {through: Review, foreignKey: 'store_id'});
+
+Review.hasMany(User, {foreignKey: 'user_id'});
+Review.hasMany(Store, {foreignKey: 'store_id'});
 
 Review.hasMany(Reciept, {foreignKey: 'review_id'});
 Delegator.hasMany(Order, {foreignKey: 'delegator_id'});

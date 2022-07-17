@@ -53,11 +53,14 @@ const recieptAuth = async (req, res, next) => {
         if (typeof img === "undefined") {
             return res.status(500).json({ message: "undefined image file(no req.file) "});
         }
+        
         const type = req.file.mimetype.split('/')[1];
-        if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
+        /*if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
             return res.status(500).json({ message: "Unsupported file type"});
+        }*/
+        if (type === 'HEIC') {
+            return res.status(500).json({ message: "file type : HEIC"});
         }
-    
         const recieptAll = await visionOCR(img.path)
         console.log("ocr result : ", recieptAll)
 
