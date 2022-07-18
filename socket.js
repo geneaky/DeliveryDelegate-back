@@ -82,7 +82,7 @@ gameSocketNameSpace.on('connection', (socket) => {
     //대표자 어플 강제 종료시 << 안드로이드에서 어플 종료 이벤트 발생시 '대표자 탈주' 이벤트 호출하고
 
     //대표자 탈주 -> 게임에서 탈주자 제거 -> 탈주 알림
-    socket.on('delegator_run_away', async(socket,{token,game_id,room_name,nickname,ranking}, next) => {
+    socket.on('delegator_run_away', async({token,game_id,room_name,nickname,ranking}) => {
         const user = await jwt.verify(token);
         const user_id = user.id;
 
@@ -94,7 +94,6 @@ gameSocketNameSpace.on('connection', (socket) => {
             where: User.user_id
         }).catch((err) => {
             console.log(err);
-            return next(err);
         });
 
         socket?.broadcast.to(room_name).emit('delegator_run_away', '대표자가 탈주했습니다');

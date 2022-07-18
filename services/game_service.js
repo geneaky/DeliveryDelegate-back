@@ -13,6 +13,7 @@ const createGame = async (req, res, next) => {
         game_name: req.body.game_name,
         game_main_text: req.body?.game_main_text,
         population: req.body.population,
+        landmark_name: req.body.landmark_name,
         landmark_posx: req.body.landmark_posx,
         landmark_posy: req.body.landmark_posy,
         socket_room_name: room_name
