@@ -6,25 +6,34 @@ const User = require('./user.model')(sequelize);
 const Store = require('./store.model')(sequelize);
 const Game = require('./game.model')(sequelize);
 const Delegator = require('./delegator.model')(sequelize);
-const Reciept = require('./reciept.model')(sequelize);
 const Review = require('./review.model')(sequelize);
 const Thumb = require('./thumb.model')(sequelize);
 const Order = require('./order.model')(sequelize);
 
+// User : Game ==> m:n [Delegator]
 User.belongsToMany(Game, {through: Delegator, foreignKey: 'user_id'});
 Game.belongsToMany(User, {through: Delegator, foreignKey: 'game_id'});
 
-// User.belongsToMany(Store, {through: Review, foreignKey: 'user_id'});
-// Store.belongsToMany(User, {through: Review, foreignKey: 'store_id'});
-
-Review.hasMany(User, {foreignKey: 'user_id'});
-Review.hasMany(Store, {foreignKey: 'store_id'});
-
-Review.hasMany(Reciept, {foreignKey: 'review_id'});
+// Delegator : Order ==> 1:n
 Delegator.hasMany(Order, {foreignKey: 'delegator_id'});
+Order.belongsTo(Order,{foreignKey:'delegator_id'})
 
-User.belongsToMany(Review, {through: Thumb, foreignKey: 'user_id'});
-Review.belongsToMany(User, {through: Thumb, foreignKey: 'review_id'});
+// User : Review ==> 1:n 
+User.hasMany(Review, {foreignKey: 'user_id'});
+Review.belongsTo(User,{foreignKey: 'user_id'});
+
+// User : Thumb ==> 1:n
+User.hasMany(Thumb, {foreignKey: 'user_id'});
+Thumb.belongsTo(User,{foreignKey: 'user_id'});
+
+// Review : Thumb ==> 1:n
+Review.hasMany(Thumb, {foreignKey: 'review_id'});
+Thumb.belongsTo(Review,{foreignKey: 'review_id'});
+
+// Store : Reveiw ==> 1:n 
+Store.hasMany(Review, {foreignKey: 'store_id'});
+Review.belongsTo(Store,{foreignKey:'store_id'});
+
 
 const db = {};
 db.sequelize = sequelize;
@@ -34,9 +43,9 @@ db.User = User;
 db.Game = Game;
 db.Delegator = Delegator;
 db.Store = Store;
-db.Receipt = Reciept;
 db.Review = Review;
 db.Thumb = Thumb;
 db.Order = Order;
+
 
 module.exports = db;
