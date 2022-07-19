@@ -15,13 +15,9 @@ const Review = (sequelize) => sequelize.define('Review', {
         type: DataTypes.TEXT,
         allowNull: true
     },
-    user_id: {
+    thumb_up: {
         type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    store_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true,
     },
 
 })
