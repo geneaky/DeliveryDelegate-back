@@ -4,3 +4,7 @@
 vision-key.json
 new-vision-key.json
 /config
+/ocr_uploads
+/review_uploads
+config/jwt.config.js
+config/db.config.js
