@@ -35,7 +35,7 @@ router.post('/reciept',  ocr_upload.single('file'), function(req, res, next) {
 });
 
 
-router.get('/thumb', async function(req, res, next) {
+router.post('/thumb', async function(req, res, next) {
     reviewService.thumbUp(req, res, next);
 });
 

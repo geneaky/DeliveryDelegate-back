@@ -14,7 +14,11 @@ const Review = (sequelize) => sequelize.define('Review', {
     image_path:{
         type: DataTypes.TEXT,
         allowNull: true
-    }
+    },
+    thumb_up: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
 
 })
 
