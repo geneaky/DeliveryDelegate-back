@@ -28,8 +28,6 @@ const createGame = async (req, res, next) => {
         return next(err);
     });
 
-    //잠시 생략
-/*
     await Order.create({
         delegator_id: delegator.delegator_id,
         store_name: req.body.order.store_name,
@@ -37,7 +35,6 @@ const createGame = async (req, res, next) => {
         mapy: req.body.order.mapy,
         detail: req.body.order.detail,
     })
-*/
 
     res.status(200).json({
         name: room_name,
