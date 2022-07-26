@@ -1,7 +1,7 @@
 const path = require('path');
 require('dotenv').config({ path: __dirname + '/develop.env' });
 const jwt = require('../api/middlewares/jwt');
-const { Review,User,Thumb,Store } = require('../models');
+const { Review,User,Store, Thumb } = require('../models');
 const Sequelize = require('sequelize');
 const vision = require('@google-cloud/vision');
 
@@ -40,6 +40,26 @@ const isBadword = async (str) =>{
     }
 }
 
+const findThumb = async (userId, reviewId) => {
+    const nowUserThumb = await Thumb.findOne({ 
+        where: {
+            user_id : userId,
+            review_id : reviewId,
+            }
+    })
+    .catch((err) => {
+        return err
+    });
+
+    if(!nowUserThumb){
+        console.log("NULL")
+        return nowUserThumb;
+   } else{
+       console.log("(함수) nowUserThumb", nowUserThumb.dataValues)
+       return nowUserThumb.dataValues;
+   }
+}
+
 
 const recieptAuth = async (req, res, next) => {
     try{
@@ -53,11 +73,14 @@ const recieptAuth = async (req, res, next) => {
         if (typeof img === "undefined") {
             return res.status(500).json({ message: "undefined image file(no req.file) "});
         }
+        
         const type = req.file.mimetype.split('/')[1];
-        if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
+        /*if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
             return res.status(500).json({ message: "Unsupported file type"});
+        }*/
+        if (type === 'HEIC') {
+            return res.status(500).json({ message: "file type : HEIC"});
         }
-    
         const recieptAll = await visionOCR(img.path)
         console.log("ocr result : ", recieptAll)
 
@@ -135,7 +158,8 @@ const writeReview = async (req, res, next) => {
                 user_id : user.id, 
                 store_id :req.body.store_id,
                 content: req.body.body,
-                image_path : img
+                image_path : img,
+                thumb_up:0
                 });
         } else {
             return res.status(500).json({ message: `[ ${pass} ] 사유로 리뷰 등록에 실패하였습니다.`});
@@ -169,62 +193,84 @@ const thumbUp = async (req,res,next) =>{
     try{
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
+        let status = ""
         console.log("(token) user id : ",user.id);
-
-        let goodReview = await Review.findOne({
-            atterbutes : ['review_id'],
-            where: {
-                user_id : user.id, 
-                store_id :req.body.store_id,
-            }
-        });
-
-        console.log("goodReview : ",goodReview.review_id)
+        console.log("req.body.review_id : ",req.body.review_id)
+        const existingThumbId = await findThumb(user.id, req.body.review_id)
         
-        await Thumb.create({
-            review_id : goodReview.review_id,
-            thumb_up : 1,
-        });
-
-        let thumbUp = await Thumb.findOne({
-            where: {
+        if (!existingThumbId || typeof existingThumbId === 'undefined'){
+            await Thumb.create({
                 user_id : user.id, 
-                review_id : goodReview.review_id,
-            }
-        });
-           
-        console.log("thumb_up",thumbUp.thumb_id);
-
-        
+                review_id :req.body.review_id,
+                thumb_count:0
+                });
+        }
+       
         await Thumb.update({ 
-            thumb_up: Sequelize.literal('thumb_up + 1') }, 
+            thumb_count: Sequelize.literal('thumb_count + 1'), }, 
             { where: { 
-                thumb_id : thumbUp.thumb_id
-            } 
+                review_id : req.body.review_id,
+                user_id : user.id
+                } 
         });
 
-
-        //좋아요 취소
-        if(thumbUp.thumb_up % 2 === 0){
-            return res.status(200).json({message : 'thumb Down '});
+        const count = await findThumb(user.id, req.body.review_id)
+        if(count.thumb_count % 2 === 0){  //좋아요 취소
+            status = 'thumb Down';
+            await Thumb.update({ thumb_up: false }, 
+                { where: { 
+                    thumb_id : count.thumb_id
+                    } 
+                });
+            
         }
         else { // 좋아요
-            return res.status(200).json({message : 'thumb UP ! '});
+            status = 'thumb Up';
+            await Thumb.update( { thumb_up: true }, 
+                { where: { 
+                    thumb_id : count.thumb_id
+                    } 
+            });
+            
         }
-
-    } catch(error){
-        res.status(500).json({ message: error.message });
-    }
     
+
+        const ReviewThumbCount = await Thumb.findAndCountAll({
+            where: {
+                review_id : req.body.review_id,
+                thumb_up: true
+            }
+         })
+
+         console.log("ReviewThumbCount :", ReviewThumbCount.count);
+         await Review.update( { thumb_up: ReviewThumbCount.count }, 
+            { where: { 
+                review_id : req.body.review_id,
+                } 
+        });
+    
+         return res.status(200).json({message : `${ReviewThumbCount.count}, ${status}`});
+    } catch(error){
+        res.status(500).json({ message: error.message })
+    }
 };
 
 const allReview = async (req, res, next) => {
-
+    let thumb_count = []
     const reviews = await Review.findAll()
     .catch((err) => {
         return next(err);
     })
-
+    for (let i=1; i<=reviews.length; i++){ 
+        let ReviewThumbCount = await Thumb.findAndCountAll({
+            where: {
+                review_id : i,
+                thumb_up: true
+            }
+        })
+        thumb_count.push([i,ReviewThumbCount.count]);
+        console.log(thumb_count);
+    }
     res.status(200).json({
         message: reviews
     });
@@ -232,4 +278,6 @@ const allReview = async (req, res, next) => {
 
 
 
-module.exports = {writeReview, recieptAuth, thumbUp, allReview};
+
+
+module.exports = {writeReview, recieptAuth, thumbUp, allReview };

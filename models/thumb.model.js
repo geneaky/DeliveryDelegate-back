@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const DataTypes = Sequelize.DataTypes;
 
+
 const Thumb = (sequelize) => sequelize.define('Thumb', {
     thumb_id: {
         type: DataTypes.INTEGER,
@@ -11,9 +12,9 @@ const Thumb = (sequelize) => sequelize.define('Thumb', {
         type: DataTypes.BOOLEAN,
         allowNull: true,
     },
-    thumb_down: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true
+    thumb_count: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
     }
 });
 
