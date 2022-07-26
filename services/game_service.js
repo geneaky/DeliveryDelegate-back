@@ -34,6 +34,8 @@ const createGame = async (req, res, next) => {
         mapx: req.body.order.mapx,
         mapy: req.body.order.mapy,
         detail: req.body.order.detail,
+    }).catch((err) => {
+        return next(err);
     })
 
     res.status(200).json({
