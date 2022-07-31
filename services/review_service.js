@@ -23,6 +23,25 @@ const visionOCR = async (img) => {
     }
 }
 
+const addName = async (array) => {
+    for (const item of array) {   
+        let userName = await User.findOne({
+            where: {
+                user_id :  item.user_id
+                }
+            });
+        item.dataValues['user_name'] = await userName.dataValues.nickname;
+        let storeName = await Store.findOne({
+            where:{
+                store_id : item.store_id
+            }
+        });
+        item.dataValues['store_name'] = await storeName.dataValues.store_name;
+    }
+    return array;
+}
+
+
 const isBadword = async (str) =>{
     try{
         console.log("작성 내용 : ", str);
@@ -75,11 +94,8 @@ const recieptAuth = async (req, res, next) => {
         }
         
         const type = req.file.mimetype.split('/')[1];
-        /*if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
+        if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
             return res.status(500).json({ message: "Unsupported file type"});
-        }*/
-        if (type === 'HEIC') {
-            return res.status(500).json({ message: "file type : HEIC"});
         }
         const recieptAll = await visionOCR(img.path)
         console.log("ocr result : ", recieptAll)
@@ -222,7 +238,6 @@ const thumbUp = async (req,res,next) =>{
                     thumb_id : count.thumb_id
                     } 
                 });
-            
         }
         else { // 좋아요
             status = 'thumb Up';
@@ -231,9 +246,7 @@ const thumbUp = async (req,res,next) =>{
                     thumb_id : count.thumb_id
                     } 
             });
-            
         }
-    
 
         const ReviewThumbCount = await Thumb.findAndCountAll({
             where: {
@@ -256,27 +269,18 @@ const thumbUp = async (req,res,next) =>{
 };
 
 const allReview = async (req, res, next) => {
-    let thumb_count = []
-    const reviews = await Review.findAll()
+    let reviews = await Review.findAll()
     .catch((err) => {
         return next(err);
     })
-    for (let i=1; i<=reviews.length; i++){ 
-        let ReviewThumbCount = await Thumb.findAndCountAll({
-            where: {
-                review_id : i,
-                thumb_up: true
-            }
-        })
-        thumb_count.push([i,ReviewThumbCount.count]);
-        console.log(thumb_count);
+    if (reviews.length === 0){
+        return res.status(200).json({message:reviews});
+    } else {
+        const result = await addName(reviews);
+        return res.status(200).json({message:result});
     }
-    res.status(200).json({
-        message: reviews
-    });
+    
 }
-
-
 
 
 
