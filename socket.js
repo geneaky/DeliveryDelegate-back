@@ -58,7 +58,10 @@ gameSocketNameSpace.on('connection', (socket) => {
 
         //게임 나가기 -> 게임 방에 한 명만 남은 경우 해당 게임을 삭제 한다.
         socket.on('quit_game', async(message) => {
-            let {token, user_id, room_name, nickname, ranking} = JSON.parse(message)
+            let {token, room_name} = JSON.parse(message)
+
+            const user_id = await jwt.verify(token);
+
             if(gameSocketNameSpace.adapter.rooms.get(room_name).size === 1) {
                 console.log('one')
                 await Delegator.destroy({
@@ -110,7 +113,7 @@ gameSocketNameSpace.on('connection', (socket) => {
         //대표자 어플 강제 종료시 << 안드로이드에서 어플 종료 이벤트 발생시 '대표자 탈주' 이벤트 호출하고
         //대표자 탈주 -> 게임에서 탈주자 제거 -> 탈주 알림
         socket.on('delegator_run_away', async (message) => {
-            let {token, game_id, room_name, nickname, ranking} = JSON.parse(message)
+            let {token, room_name} = JSON.parse(message)
             const user = await jwt.verify(token);
             const user_id = user.id;
 
@@ -159,7 +162,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
         //대표자 랜드마크 도착 -> 안드로이드에서 대표자가 랜드마크에 도착하면 해당 이벤트를 참여자들에게 알림
         socket.on('delegator_arrive', (message) => {
-            let {token, game_id, room_name,} = JSON.parse(message)
+            let {room_name} = JSON.parse(message)
             socket?.broadcast.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
         });
 
@@ -169,7 +172,8 @@ gameSocketNameSpace.on('connection', (socket) => {
         });
 
         //게임 종료 후 게임 삭제 (대표자가 삭제) --> 게임 생성하자마자 삭제하는 경우도 있음
-        socket.on('game_remove', async ({room_name, ranking}) => {
+        socket.on('game_remove', async (message) => {
+            let {room_name, ranking} = JSON.parse(message)
             if (ranking === 1) {
                 await Delegator.destroy({
                     include: [
