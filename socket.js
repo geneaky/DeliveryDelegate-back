@@ -62,8 +62,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             const user_id = await jwt.verify(token);
 
-            const size = gameSocketNameSpace.adapter.rooms.get(room_name).size;
-            if(size === 1) {
+            if(gameSocketNameSpace.adapter.rooms.get(room_name).size === 1) {
                 console.log('one')
                 await Delegator.destroy({
                     include: [{
@@ -82,11 +81,11 @@ gameSocketNameSpace.on('connection', (socket) => {
                 })
 
                 console.log('user who is last one quit room and destroy game, room')
-                socket?.to(room_name).emit('quit_game', { count : size, nickname: nickname})
+                socket?.to(room_name).emit('quit_game', { count : gameSocketNameSpace.adapter.rooms.get(room_name).size - 1, nickname: nickname})
                 socket?.disconnect()
             } else {
                 console.log('user quit room but left users in room more than one')
-                socket?.to(room_name).emit('quit_game', { count : size, nickname: nickname})
+                socket?.to(room_name).emit('quit_game', { count : gameSocketNameSpace.adapter.rooms.get(room_name).size - 1, nickname: nickname})
                 socket?.disconnect();
             }
         })
