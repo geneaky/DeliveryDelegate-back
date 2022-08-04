@@ -81,11 +81,11 @@ gameSocketNameSpace.on('connection', (socket) => {
                 })
 
                 console.log('user who is last one quit room and destroy game, room')
-                socket?.to(room_name).emit('quit_game', { count : gameSocketNameSpace.adapter.rooms.get(room_name).size - 1, nickname: nickname})
+                socket?.to(room_name).emit('quit_game', { count : io?.sockets?.adapter?.rooms?.get(room_name)?.size - 1, nickname: nickname})
                 socket?.disconnect()
             } else {
                 console.log('user quit room but left users in room more than one')
-                socket?.to(room_name).emit('quit_game', { count : gameSocketNameSpace.adapter.rooms.get(room_name).size - 1, nickname: nickname})
+                socket?.to(room_name).emit('quit_game', { count : io?.sockets?.adapter?.rooms?.get(room_name)?.size - 1, nickname: nickname})
                 socket?.disconnect();
             }
         })
