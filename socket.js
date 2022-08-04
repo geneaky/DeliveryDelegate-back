@@ -58,11 +58,12 @@ gameSocketNameSpace.on('connection', (socket) => {
 
         //게임 나가기 -> 게임 방에 한 명만 남은 경우 해당 게임을 삭제 한다.
         socket.on('quit_game', async(message) => {
-            let {token, room_name} = JSON.parse(message)
+            let {token, nickname, room_name} = JSON.parse(message)
 
             const user_id = await jwt.verify(token);
 
-            if(gameSocketNameSpace.adapter.rooms.get(room_name).size === 1) {
+            const size = gameSocketNameSpace.adapter.rooms.get(room_name).size;
+            if(size === 1) {
                 console.log('one')
                 await Delegator.destroy({
                     include: [{
@@ -80,9 +81,12 @@ gameSocketNameSpace.on('connection', (socket) => {
                     console.log(err);
                 })
 
+                console.log('user who is last one quit room and destroy game, room')
+                socket?.to(room_name).emit('quit_game', { count : size, nickname: nickname})
                 socket?.disconnect()
             } else {
-                console.log('two')
+                console.log('user quit room but left users in room more than one')
+                socket?.to(room_name).emit('quit_game', { count : size, nickname: nickname})
                 socket?.disconnect();
             }
         })
