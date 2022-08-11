@@ -46,10 +46,10 @@ const isBadword = async (str) =>{
     try{
         console.log("작성 내용 : ", str);
         if(str.length < 10 ){
-            return "작성 내용 10글자 이하"
+            return "too short"
         }
         else if(str.includes('시발') || str.includes('새끼') || str.includes('바보')){
-            return "금칙어 사용" 
+            return "bad word" 
         }
         else {
             return "pass"
@@ -192,7 +192,7 @@ const writeReview = async (req, res, next) => {
                 thumb_up:0
                 });
         } else {
-            return res.status(500).json({ message: `[ ${pass} ] 사유로 리뷰 등록에 실패하였습니다.`});
+            return res.status(500).json({message:pass});
         }   
  
         
