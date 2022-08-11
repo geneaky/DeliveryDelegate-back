@@ -32,9 +32,10 @@ const registerStore = async (req, res, next) => {
 };
 
 const getReviews = async (req, res, next) => {
-    await Review.findAll({ store_id: req.params.id})
+    console.log(req.params.id)
+    await Review.findAll({where:{ store_id: req.params.id}})
         .then((result) => {
-            return res.json({reviews: result});
+            return res.json({message: result});
         })
         .catch((err) => {
             next(httpError(500,err.message));
