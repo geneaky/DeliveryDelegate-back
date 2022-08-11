@@ -110,7 +110,6 @@ const recieptAuth = async (req, res, next) => {
             next(httpError(500,err.message));
         })
         
-        console.log("typeof store",typeof store);
 
         if(typeof store === "undefined" || !store){
             console.log("can't find store");
@@ -167,17 +166,19 @@ const writeReview = async (req, res, next) => {
             }
             img = req.file.path.toString()
         }
-        let store = await Store.findOne({
+        const store = await Store.findOne({
             where: {
                 store_id : req.body.store_id
                 }
             }).catch((err) => {
                 next(httpError(500,err.message));
             });
+
         if(typeof store === "undefined" || !store){
+            console.log("존재하지 않음 : ", store);
             return res.status(500).json({ message: "can't find store"});
         } else{
-            console.log(store);
+            console.log("존재합 : ", store);
         }
             
 
