@@ -8,11 +8,11 @@ const Review = (sequelize) => sequelize.define('Review', {
         primaryKey: true,
     },
     content: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true
     },
     image_path:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true
     },
     thumb_up: {
