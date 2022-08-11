@@ -167,7 +167,20 @@ const writeReview = async (req, res, next) => {
             }
             img = req.file.path.toString()
         }
-   
+        let store = await Store.findOne({
+            where: {
+                store_id : req.body.store_id
+                }
+            }).catch((err) => {
+                next(httpError(500,err.message));
+            });
+        if(typeof store === "undefined" || !store){
+            return res.status(500).json({ message: "can't find store"});
+        } else{
+            console.log(store);
+        }
+            
+
         // 리뷰등록
         if (pass === "pass"){
             await Review.create({
