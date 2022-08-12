@@ -1,6 +1,7 @@
 const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
 const {Store, Review} = require('../models');
+const review = require('./review_service');
 
 const findStore = async (req, res, next) => {
     await Store.findOne({
@@ -34,8 +35,13 @@ const registerStore = async (req, res, next) => {
 const getReviews = async (req, res, next) => {
     console.log(req.params.id)
     await Review.findAll({where:{ store_id: req.params.id}})
-        .then((result) => {
-            return res.json({message: result});
+        .then(async (result) => {
+            if (result.length === 0){
+                return res.status(200).json({message: result});
+            } else {
+                const reviews = await review.addName(result);
+                return res.status(200).json({message:reviews});
+            }
         })
         .catch((err) => {
             next(httpError(500,err.message));
