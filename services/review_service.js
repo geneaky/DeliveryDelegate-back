@@ -298,4 +298,4 @@ const allReview = async (req, res, next) => {
 
 
 
-module.exports = {writeReview, recieptAuth, thumbUp, allReview };
+module.exports = {writeReview, recieptAuth, thumbUp, allReview, addName };
