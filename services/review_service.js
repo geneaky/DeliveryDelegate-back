@@ -1,4 +1,5 @@
 const path = require('path');
+const httpError = require('http-errors');
 require('dotenv').config({ path: __dirname + '/develop.env' });
 const jwt = require('../api/middlewares/jwt');
 const { Review,User,Store, Thumb } = require('../models');
@@ -166,21 +167,20 @@ const writeReview = async (req, res, next) => {
             }
             img = req.file.path.toString()
         }
-        const store = await Store.findOne({
+        await Store.findOne({
             where: {
                 store_id : req.body.store_id
                 }
-            }).catch((err) => {
-                next(httpError(500,err.message));
+            }).then((store)=>{
+                if(typeof store === "undefined" || !store){
+                    console.log("존재하지 않음 : ", store);
+                    throw new Error("can't find store")
+                    //return res.status(500).json({ message: "can't find store"})
+                } else{
+                    console.log("존재합 : ", store);
+                }
+                return;
             });
-
-        if(typeof store === "undefined" || !store){
-            console.log("존재하지 않음 : ", store);
-            return res.status(500).json({ message: "can't find store"});
-        } else{
-            console.log("존재합 : ", store);
-        }
-            
 
         // 리뷰등록
         if (pass === "pass"){
@@ -214,6 +214,7 @@ const writeReview = async (req, res, next) => {
         return res.status(200).json({message : 'Review registered'});
 
     } catch(error) {
+        //console.log(error);
         res.status(500).json({ message: error.message });
     };
 };
