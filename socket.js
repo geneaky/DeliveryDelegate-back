@@ -56,6 +56,29 @@ gameSocketNameSpace.on('connection', (socket) => {
             socket?.to(room_name).emit('attend', socket.id + '입장');
         });
 
+        //게임 준비
+        socket.on('ready_game', async(message) => {
+            let {token, nickname, room_name} = JSON.parse(message)
+
+            const user_id = await jwt.verify(token);
+
+            //게임 참석한 대표자들의 상태를 게임 준비상태로 update
+            await Delegator.update({
+                status: true
+            },{
+                include: [{
+                    model: User,
+                    where: { user_id : user_id }
+                }],
+              where: User.user_id
+            })
+
+            //준비완료 메세지 전달
+            socket?.to(room_name).emit('ready_game', 'ready')
+        })
+
+        //게임 시작
+
         //게임 나가기 -> 게임 방에 한 명만 남은 경우 해당 게임을 삭제 한다.
         socket.on('quit_game', async(message) => {
             let {token, nickname, room_name} = JSON.parse(message)
