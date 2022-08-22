@@ -77,7 +77,93 @@ gameSocketNameSpace.on('connection', (socket) => {
             socket?.to(room_name).emit('ready_game', 'ready')
         })
 
+        //게임 시작전 방장을 제외한 모든 대표자들이 ready했는지 방장이 확인
+        socket.on('check_ready', async(message) => {
+            let {token, nickname, room_name} = JSON.parse(message)
+
+            const user_id = await jwt.verify(token);
+
+            let daeypo = await Delegator.findOne({
+                include: [{
+                    model: User,
+                    where: { user_id : user_id }
+                }],
+                where: User.user_id
+            }).then((delegator) => {
+                if(delegator?.ranking !== 1) {
+                    //방장이 아님
+                    return;
+                }
+            }).catch((err) => {
+                console.log(err);
+            })
+
+            let attenderList = await Delegator.find({
+                include: [{
+                    model: Game,
+                    where: { game_id : daeypo.game_id}
+                }],
+                where: Game.game_id
+            }).catch((err) => {
+                console.log(err);
+            })
+
+            attenderList.forEach((attender) => {
+                if(!attender.status) {
+                    socket?.to(room_name).emit('check_ready', 'not_ready')
+                    return;
+                }
+            })
+
+            socket?.emit('check_ready', 'complete_ready')
+        })
+
         //게임 시작
+        socket.on('on_game', async(message) => {
+            let {token, room_name} = JSON.parse(message)
+
+            const user_id = await jwt.verify(token);
+
+            let daeypo = await Delegator.findOne({
+                include: [{
+                    model: User,
+                    where: { user_id : user_id }
+                }],
+                where: User.user_id
+            }).then((delegator) => {
+                if(delegator?.ranking !== 1) {
+                    //방장이 아님
+                    return;
+                }
+            }).catch((err) => {
+                console.log(err);
+            })
+
+            let attenderList = await Delegator.find({
+                include: [{
+                    model: Game,
+                    where: { game_id : daeypo.game_id}
+                }],
+                where: Game.game_id
+            }).catch((err) => {
+                console.log(err);
+            })
+
+            attenderList.sort(() => Math.random() - 0.5);
+
+            for(const [idx,attender] of attenderList) {
+                await Delegator.update({
+                        ranking: idx+1
+                    },{
+                        where: {delegator_id: attender.delegator_id}
+                    }
+                ).catch((err) => {
+                    console.log(err);
+                })
+            }
+            //랜덤 배치 끝 -> 이후 안드로이드에서 게임 결과 요청
+            socket?.to(room_name).emit('on_game', 'game_end')
+        })
 
         //게임 나가기 -> 게임 방에 한 명만 남은 경우 해당 게임을 삭제 한다.
         socket.on('quit_game', async(message) => {
