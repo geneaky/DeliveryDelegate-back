@@ -216,8 +216,25 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log(err) // 재시도 처리 필요
             });
 
+            let delegators = await Delegator.findAll({
+                include: [{
+                    model:Game,
+                    where: {game_id:game_id}
+                }]
+            });
+
+            let array = delegators.map(d => d.delegator_id);
+
+            let orders = await Order.findAll({
+                where: {
+                    delegator_id: { in : array}
+                }
+            });
+
             if (ranking === 1) {
-                socket?.to(room_name).emit('game_result', '대표자' + nickname);
+                socket?.emit('game_result', '대표자로 선정되었습니다' + orders);
+            } else {
+                socket?.emit('대표자가 선정되었습니다')
             }
         });
 
