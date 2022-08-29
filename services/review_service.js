@@ -1,6 +1,4 @@
-const path = require('path');
 const httpError = require('http-errors');
-require('dotenv').config({ path: __dirname + '/develop.env' });
 const jwt = require('../api/middlewares/jwt');
 const { Review,User,Store, Thumb } = require('../models');
 const Sequelize = require('sequelize');
@@ -10,7 +8,7 @@ const visionOCR = async (img) => {
     try{
     console.log("OCR");
     const client = new vision.ImageAnnotatorClient({
-        keyFilename:"./new-vision-key.json"
+        keyFilename:'new-vision-key.json'
     });
     let string = '';
     const [result] = await client.textDetection(img);
