@@ -8,6 +8,7 @@ const visionOCR = async (img) => {
     try{
     console.log("OCR");
     const client = new vision.ImageAnnotatorClient({
+        projectId: "dal2-360507",
         keyFilename:'new-vision-key.json'
     });
     let string = '';
