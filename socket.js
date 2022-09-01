@@ -190,11 +190,11 @@ gameSocketNameSpace.on('connection', (socket) => {
                 })
 
                 console.log('user who is last one quit room and destroy game, room')
-                socket?.to(room_name).emit('quit_game', { count : io?.sockets?.adapter?.rooms?.get(room_name)?.size - 1, nickname: nickname})
+                socket?.to(room_name).emit('quit_game', nickname)
                 socket?.disconnect()
             } else {
                 console.log('user quit room but left users in room more than one')
-                socket?.to(room_name).emit('quit_game', { count : io?.sockets?.adapter?.rooms?.get(room_name)?.size - 1, nickname: nickname})
+                socket?.to(room_name).emit('quit_game', nickname)
                 socket?.disconnect();
             }
         })
@@ -238,9 +238,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             }
         });
 
-        //대표자 참석 확인 << 이건 안드로이드에서 일정 시간 내에 <확인> 버튼 안누르면 '대표자 탈주' 이벤트 호출
-        //대표자 어플 강제 종료시 << 안드로이드에서 어플 종료 이벤트 발생시 '대표자 탈주' 이벤트 호출하고
-        //대표자 탈주 -> 게임에서 탈주자 제거 -> 탈주 알림
+        // 대표자 탈주 -> 알림 후 -> 게임 삭제
         socket.on('delegator_run_away', async (message) => {
             let {token, room_name} = JSON.parse(message)
             const user = await jwt.verify(token);
@@ -256,36 +254,13 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log(err);
             });
 
-            socket?.broadcast.to(room_name).emit('delegator_run_away', '대표자가 탈주했습니다');
-        });
-
-
-        //대표자 다시 선정 -> 안드로이드에서 탈주 알림 받은 후 -> '대표자 다시 선정' 이벤트 호출
-        socket.on('delegator_re_ranking', async (message) => {
-            let {token, game_id, room_name, nickname, ranking} = JSON.parse(message)
-
-            const user = await jwt.verify(token);
-
-            const new_ranking = ranking - 1;
-
-            await Delegator.update({
-                ranking: new_ranking
-            }, {
-                where: {
-                    user_id: user.id,
-                    game_id: game_id
-                }
+            await Game.destroy({
+                where: {socket_room_name: room_name}
             }).catch((err) => {
-                console.log(err);// 재시도 처리 필요
-            });
+                console.log(err);
+            })
 
-            if (new_ranking === 1) {
-                socket?.to(room_name)
-                    .emit('delegator_re_ranking', {
-                        msg: '대표자' + nickname,
-                        ranking: new_ranking
-                    });
-            }
+            socket?.broadcast.to(room_name).emit('delegator_run_away', '대표자가 탈주했습니다');
         });
 
 
