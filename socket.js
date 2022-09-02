@@ -84,11 +84,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             const user_id = await jwt.verify(token);
 
             let daeypo = await Delegator.findOne({
-                include: [{
-                    model: User,
-                    where: { user_id : user_id }
-                }],
-                where: User.user_id
+                where: {user_id :user_id}
             }).then((delegator) => {
                 if(delegator?.ranking !== 1) {
                     //방장이 아님
@@ -99,11 +95,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             })
 
             let attenderList = await Delegator.find({
-                include: [{
-                    model: Game,
-                    where: { game_id : daeypo.game_id}
-                }],
-                where: Game.game_id
+                where: {game_id : daeypo.game_id}
             }).catch((err) => {
                 console.log(err);
             })
