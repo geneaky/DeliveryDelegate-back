@@ -94,7 +94,7 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log(err);
             })
 
-            let attenderList = await Delegator.find({
+            let attenderList = await Delegator.findAll({
                 where: {game_id : daeypo.game_id}
             }).catch((err) => {
                 console.log(err);
@@ -131,7 +131,7 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log(err);
             })
 
-            let attenderList = await Delegator.find({
+            let attenderList = await Delegator.findAll({
                 include: [{
                     model: Game,
                     where: { game_id : daeypo.game_id}
