@@ -66,11 +66,11 @@ gameSocketNameSpace.on('connection', (socket) => {
             await Delegator.update({
                 status: true
             },{
-                include: [{
-                    model: User,
-                    where: { user_id : user_id }
-                }],
-              where: User.user_id
+              where: {
+                    user_id: user_id
+              }
+            }).catch(err => {
+                console.log(err);
             })
 
             //준비완료 메세지 전달
