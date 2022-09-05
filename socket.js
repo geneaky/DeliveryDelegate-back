@@ -83,19 +83,12 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             const user_id = await jwt.verify(token);
 
-            let daeypo = await Delegator.findOne({
-                where: {user_id :user_id}
-            }).then((delegator) => {
-                if(delegator?.ranking !== 1) {
-                    //방장이 아님
-                    return;
-                }
-            }).catch((err) => {
-                console.log(err);
-            })
+            let daepyo = await Delegator.findOne({
+                where: { user_id : user_id }
+            });
 
             let attenderList = await Delegator.findAll({
-                where: {game_id : daeypo.game_id}
+                where: {game_id : daepyo.game_id}
             }).catch((err) => {
                 console.log(err);
             })
@@ -117,26 +110,13 @@ gameSocketNameSpace.on('connection', (socket) => {
             const user_id = await jwt.verify(token);
 
             let daeypo = await Delegator.findOne({
-                include: [{
-                    model: User,
-                    where: { user_id : user_id }
-                }],
-                where: User.user_id
-            }).then((delegator) => {
-                if(delegator?.ranking !== 1) {
-                    //방장이 아님
-                    return;
-                }
+                where: {user_id: user_id}
             }).catch((err) => {
                 console.log(err);
             })
 
             let attenderList = await Delegator.findAll({
-                include: [{
-                    model: Game,
-                    where: { game_id : daeypo.game_id}
-                }],
-                where: Game.game_id
+                where: { game_id : daeypo.game_id}
             }).catch((err) => {
                 console.log(err);
             })
