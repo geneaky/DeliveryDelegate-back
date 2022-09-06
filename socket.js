@@ -87,6 +87,8 @@ gameSocketNameSpace.on('connection', (socket) => {
                 where: { user_id : user_id }
             });
 
+            console.log(daepyo);
+
             let attenderList = await Delegator.findAll({
                 where: {game_id : daepyo.game_id}
             }).catch((err) => {
