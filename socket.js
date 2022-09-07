@@ -87,6 +87,11 @@ gameSocketNameSpace.on('connection', (socket) => {
                 where: {user_id : user.id}
             });
 
+            //대표가 아닐 경우 분기 처리
+            if (daepyo.ranking !== 1) {
+                return;
+            }
+
             let attenderList = await Delegator.findAll({
                 where: {game_id : daepyo.game_id}
             }).catch((err) => {
@@ -169,26 +174,10 @@ gameSocketNameSpace.on('connection', (socket) => {
 
         //안드로이드 게임 결과 전송
         socket.on('game_result', async (message) => {
-            let {token, game_id, room_name, nickname, ranking} = JSON.parse(message)
-
-            const user = await jwt.verify(token);
-
-            await Delegator.update({
-                ranking: ranking
-            }, {
-                where: {
-                    user_id: user.id,
-                    game_id: game_id
-                }
-            }).catch((err) => {
-                console.log(err) // 재시도 처리 필요
-            });
+            let {token, game_id, ranking} = JSON.parse(message)
 
             let delegators = await Delegator.findAll({
-                include: [{
-                    model:Game,
-                    where: {game_id:game_id}
-                }]
+                where: {game_id:game_id}
             });
 
             let array = delegators.map(d => d.delegator_id);
@@ -200,7 +189,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             });
 
             if (ranking === 1) {
-                socket?.emit('game_result', '대표자로 선정되었습니다' + orders);
+                socket?.emit('game_result', orders);
             } else {
                 socket?.emit('대표자가 선정되었습니다')
             }
@@ -210,14 +199,21 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.on('delegator_run_away', async (message) => {
             let {token, room_name} = JSON.parse(message)
             const user = await jwt.verify(token);
-            const user_id = user.id;
+
+            let daepyo = await Delegator.findOne({
+                where : {user_id: user.id}
+            });
+
+            if(daepyo.ranking !== 1) {
+                return;
+            }
+
+            let game = await Game.findOne({
+                where: { socket_room_name: room_name}
+            })
 
             await Delegator.destroy({
-                include: [{
-                    model: User,
-                    where: {user_id: user_id}
-                }],
-                where: User.user_id
+                where: { game_id : game.game_id}
             }).catch((err) => {
                 console.log(err);
             });
