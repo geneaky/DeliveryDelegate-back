@@ -98,12 +98,12 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log(err);
             })
 
-            attenderList.forEach((attender) => {
+            for(let attender in attenderList) {
                 if(!attender?.status) {
                     socket?.to(room_name).emit('check_ready', 'not_ready')
                     return;
                 }
-            })
+            }
 
             socket?.emit('check_ready', 'complete_ready')
         })
