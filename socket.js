@@ -74,7 +74,8 @@ gameSocketNameSpace.on('connection', (socket) => {
             })
 
             //준비완료 메세지 전달
-            io?.to(room_name).emit('ready_game', 'ready')
+            socket?.to(room_name).emit('ready_game', 'ready')
+            socket?.emit('ready_game', 'ready')
         })
 
         //게임 시작전 방장을 제외한 모든 대표자들이 ready했는지 방장이 확인
@@ -100,7 +101,8 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             for(let attender in attenderList) {
                 if(attender.ranking !==1 && !attender?.status) {
-                    io?.to(room_name).emit('check_ready', 'not_ready')
+                    socket?.to(room_name).emit('check_ready', 'not_ready')
+                    socket?.emit('check_ready', 'not_ready')
                     return;
                 }
             }
