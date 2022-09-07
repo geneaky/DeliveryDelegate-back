@@ -60,14 +60,14 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.on('ready_game', async(message) => {
             let {token, nickname, room_name} = JSON.parse(message)
 
-            const user_id = await jwt.verify(token);
+            const user = await jwt.verify(token);
 
             //게임 참석한 대표자들의 상태를 게임 준비상태로 update
             await Delegator.update({
                 status: true
             },{
               where: {
-                    user_id: user_id
+                    user_id: user.id
               }
             }).catch(err => {
                 console.log(err);
@@ -81,13 +81,11 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.on('check_ready', async(message) => {
             let {token, nickname, room_name} = JSON.parse(message)
 
-            const user_id = await jwt.verify(token);
+            const user = await jwt.verify(token);
 
             let daepyo = await Delegator.findOne({
-                where: { user_id : user_id }
+                where: {user_id : user.id}
             });
-
-            console.log(daepyo);
 
             let attenderList = await Delegator.findAll({
                 where: {game_id : daepyo.game_id}
@@ -96,7 +94,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             })
 
             attenderList.forEach((attender) => {
-                if(!attender.status) {
+                if(!attender?.status) {
                     socket?.to(room_name).emit('check_ready', 'not_ready')
                     return;
                 }
@@ -109,10 +107,10 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.on('on_game', async(message) => {
             let {token, room_name} = JSON.parse(message)
 
-            const user_id = await jwt.verify(token);
+            const user = await jwt.verify(token);
 
             let daeypo = await Delegator.findOne({
-                where: {user_id: user_id}
+                where: {user_id: user.id}
             }).catch((err) => {
                 console.log(err);
             })
@@ -143,16 +141,12 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.on('quit_game', async(message) => {
             let {token, nickname, room_name} = JSON.parse(message)
 
-            const user_id = await jwt.verify(token);
+            const user = await jwt.verify(token);
 
             if(gameSocketNameSpace.adapter.rooms.get(room_name).size === 1) {
                 console.log('one')
                 await Delegator.destroy({
-                    include: [{
-                        model: User,
-                        where: {user_id: user_id}
-                    }],
-                    where: User.user_id
+                    where: { user_id : user.id}
                 }).catch((err) => {
                     console.log(err);
                 });
