@@ -24,6 +24,7 @@ const createGame = async (req, res, next) => {
     const delegator = await Delegator.create({
         game_id: game.game_id,
         user_id: user.id,
+        status: true,
         ranking: 1 //방장의 경우 처음 랭킹 1을 할당
     }).catch((err) => {
         return next(err);
