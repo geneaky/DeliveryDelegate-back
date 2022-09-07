@@ -100,7 +100,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             })
 
             for(let attender in attenderList) {
-                if(attender.ranking !==1 && !attender?.status) {
+                if(attender.ranking !==1 && attender?.status === false) {
                     socket?.to(room_name).emit('check_ready', 'not_ready')
                     socket?.emit('check_ready', 'not_ready')
                     return;
