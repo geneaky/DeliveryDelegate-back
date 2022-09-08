@@ -99,14 +99,13 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log(err);
             })
 
-            for(let attender in attenderList) {
-                if(attender.ranking !==1 && attender?.status === false) {
+            for(let idx in attenderList) {
+                if(attenderList[idx].ranking !==1 && attenderList[idx].status === false) {
                     socket?.to(room_name).emit('check_ready', 'not_ready')
                     socket?.emit('check_ready', 'not_ready')
                     return;
                 }
             }
-
             socket?.emit('check_ready', 'complete_ready')
         })
 
@@ -130,11 +129,11 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             attenderList.sort(() => Math.random() - 0.5);
 
-            for(const [idx,attender] of attenderList) {
+            for(let idx in attenderList) {
                 await Delegator.update({
                         ranking: idx+1
                     },{
-                        where: {delegator_id: attender.delegator_id}
+                        where: {delegator_id: attenderList[idx].delegator_id}
                     }
                 ).catch((err) => {
                     console.log(err);
