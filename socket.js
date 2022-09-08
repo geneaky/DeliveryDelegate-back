@@ -4,6 +4,7 @@ const { Server } = require('socket.io');
 const jwt = require('./api/middlewares/jwt');
 const {User, Delegator, Order, Game} = require('./models');
 const fs = require('fs');
+const {Op} = require("sequelize");
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {});
@@ -32,7 +33,6 @@ gameSocketNameSpace.on('connection', (socket) => {
                 socket?.emit('population', '인원 초과');
                 return;
             }
-
             const delegator = await Delegator.create({
                 game_id: game_id,
                 user_id: user.id
@@ -127,11 +127,14 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log(err);
             })
 
-            attenderList.sort(() => Math.random() - 0.5);
+            for(let i = 0; i < 5; i++) {
+                attenderList.sort(() => Math.random() - 0.5);
+            }
 
             for(let idx in attenderList) {
                 await Delegator.update({
-                        ranking: idx+1
+                        ranking: Number(idx)+1,
+                        status: true
                     },{
                         where: {delegator_id: attenderList[idx].delegator_id}
                     }
@@ -198,7 +201,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
                 let orders = await Order.findAll({
                     where: {
-                        delegator_id: { in : array}
+                        delegator_id: { [Op.in] : array}
                     }
                 });
 
