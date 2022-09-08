@@ -238,14 +238,14 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log(err);
             })
 
-            socket?.broadcast.to(room_name).emit('delegator_run_away', '대표자가 탈주했습니다');
+            socket?.to(room_name).emit('delegator_run_away', '대표자가 탈주했습니다');
         });
 
 
         //대표자 랜드마크 도착 -> 안드로이드에서 대표자가 랜드마크에 도착하면 해당 이벤트를 참여자들에게 알림
         socket.on('delegator_arrive', (message) => {
             let {room_name} = JSON.parse(message)
-            socket?.broadcast.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
+            socket?.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
         });
 
         //게임 종료
