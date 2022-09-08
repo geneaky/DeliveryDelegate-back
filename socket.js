@@ -141,6 +141,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             }
             //랜덤 배치 끝 -> 이후 안드로이드에서 게임 결과 요청
             socket?.to(room_name).emit('on_game', 'game_end')
+            socket?.emit('on_game','game_end')
         })
 
         //게임 나가기 -> 게임 방에 한 명만 남은 경우 해당 게임을 삭제 한다.
@@ -175,24 +176,33 @@ gameSocketNameSpace.on('connection', (socket) => {
 
         //안드로이드 게임 결과 전송
         socket.on('game_result', async (message) => {
-            let {token, game_id, ranking} = JSON.parse(message)
+            let {token, game_id} = JSON.parse(message)
 
-            let delegators = await Delegator.findAll({
-                where: {game_id:game_id}
+            const user = await jwt.verify(token);
+
+            let delegator = await Delegator.findOne({
+                where: {user_id: user.id}
             });
 
-            let array = delegators.map(d => d.delegator_id);
+            if(delegator.ranking !== 1) {
+                socket?.emit('game_result', '대표자가 선정되었습니다')
+                return;
 
-            let orders = await Order.findAll({
-                where: {
-                    delegator_id: { in : array}
-                }
-            });
+            }else{
 
-            if (ranking === 1) {
+                let delegators = await Delegator.findAll({
+                    where: {game_id:game_id}
+                });
+
+                let array = delegators.map(d => d.delegator_id);
+
+                let orders = await Order.findAll({
+                    where: {
+                        delegator_id: { in : array}
+                    }
+                });
+
                 socket?.emit('game_result', orders);
-            } else {
-                socket?.emit('대표자가 선정되었습니다')
             }
         });
 
