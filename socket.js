@@ -200,8 +200,10 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             }else{
 
+                console.log(game_id);
+                console.log(typeof  game_id);
                 let delegators = await Delegator.findAll({
-                    where: {game_id:game_id}
+                    where: {game_id: game_id}
                 });
 
                 console.log('test1::'+delegators)

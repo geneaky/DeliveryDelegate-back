@@ -41,6 +41,7 @@ const createGame = async (req, res, next) => {
 
     res.status(200).json({
         name: room_name,
+        game_id: game.game_id,
         message: 'socket room created'
     });
 }
