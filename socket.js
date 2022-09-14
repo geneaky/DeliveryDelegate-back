@@ -204,13 +204,19 @@ gameSocketNameSpace.on('connection', (socket) => {
                     where: {game_id:game_id}
                 });
 
-                let array = delegators.map(d => d.delegator_id);
+                console.log('test1::'+delegators)
+
+                let array = delegators.map(d => d?.delegator_id);
+
+                console.log('test2::'+array)
 
                 let orders = await Order.findAll({
                     where: {
                         delegator_id: { [Op.in] : array}
                     }
                 });
+
+                console.log('test3::'+ orders)
 
                 socket?.emit('game_result', orders);
                 console.log('대표자에게: 대표자로 선정되었습니다')
