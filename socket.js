@@ -21,6 +21,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             socket.join(room_name);
             socket.emit('attend', socket?.id + '입장');
             socket.to(room_name).emit('attend', socket?.id + '입장');
+            console.log('attendMaster 동작');
         });
 
         //게임 참석
@@ -54,6 +55,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             socket?.join(room_name);
             socket?.to(room_name).emit('attend', socket.id + '입장');
+            console.log('attend 동작');
         });
 
         //게임 준비
@@ -76,6 +78,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             //준비완료 메세지 전달
             socket?.to(room_name).emit('ready_game', 'ready')
             socket?.emit('ready_game', 'ready')
+            console.log('ready 동작');
         })
 
         //게임 시작전 방장을 제외한 모든 대표자들이 ready했는지 방장이 확인
@@ -90,6 +93,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             //대표가 아닐 경우 분기 처리
             if (daepyo.ranking !== 1) {
+                console.log('대표가 아니라서 탈출');
                 return;
             }
 
@@ -107,6 +111,7 @@ gameSocketNameSpace.on('connection', (socket) => {
                 }
             }
             socket?.emit('check_ready', 'complete_ready')
+            console.log('check_ready 동작');
         })
 
         //게임 시작
@@ -145,6 +150,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             //랜덤 배치 끝 -> 이후 안드로이드에서 게임 결과 요청
             socket?.to(room_name).emit('on_game', 'game_end')
             socket?.emit('on_game','game_end')
+            console.log('on_game 동작');
         })
 
         //게임 나가기 -> 게임 방에 한 명만 남은 경우 해당 게임을 삭제 한다.
@@ -189,6 +195,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             if(delegator.ranking !== 1) {
                 socket?.emit('game_result', '대표자가 선정되었습니다')
+                console.log('예비대표자들에게 : 대표자가 선정되었습니다');
                 return;
 
             }else{
@@ -206,6 +213,7 @@ gameSocketNameSpace.on('connection', (socket) => {
                 });
 
                 socket?.emit('game_result', orders);
+                console.log('대표자에게: 대표자로 선정되었습니다')
             }
         });
 
@@ -239,6 +247,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             })
 
             socket?.to(room_name).emit('delegator_run_away', '대표자가 탈주했습니다');
+            console.log('대표자 탈주 이벤트 동작');
         });
 
 
@@ -246,11 +255,13 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.on('delegator_arrive', (message) => {
             let {room_name} = JSON.parse(message)
             socket?.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
+            console.log('대표자 랜드마크 도작 이벤트 동작')
         });
 
         //게임 종료
         socket.on('game_end', (socket) => {
             socket?.disconnect();
+            console.log('game_end 동작')
         });
 
         //게임 종료 후 게임 삭제 (대표자가 삭제) --> 게임 생성하자마자 삭제하는 경우도 있음
@@ -273,7 +284,11 @@ gameSocketNameSpace.on('connection', (socket) => {
                 }).catch((err) => {
                     console.log(err);
                 })
+
+                console.log('대표자가 게임 삭제')
             }
+
+            socket?.disconnect();
         });
 
         socket.on('disconnect', (socket) => {
