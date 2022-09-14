@@ -220,7 +220,18 @@ gameSocketNameSpace.on('connection', (socket) => {
 
                 console.log('test3::'+ orders)
 
-                socket?.emit('game_result', orders);
+                let result = [];
+
+                for(let order in orders) {
+                    result.push({
+                        store_name: order?.store_name,
+                        mapx: order?.mapx,
+                        mapy: order?.mapy,
+                        detail: order?.detail
+                    })
+                }
+
+                socket?.emit('game_result', result);
                 console.log('대표자에게: 대표자로 선정되었습니다')
             }
         });
