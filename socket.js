@@ -16,8 +16,7 @@ gameSocketNameSpace.on('connection', (socket) => {
     try{
 
         //jackson test용 order event
-        socket.on('order_test',async () => {
-
+        socket.on('order_test', () => {
             let order = [
                 {
                     store_name: '가게1',
