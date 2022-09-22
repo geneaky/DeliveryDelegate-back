@@ -1,7 +1,7 @@
 const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
 const { v4 } = require('uuid');
-const { Game, Delegator, Order} = require('../models');
+const { Game, Delegator, Order, User} = require('../models');
 const {Op} = require("sequelize");
 
 const createGame = async (req, res, next) => {
