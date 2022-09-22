@@ -19,16 +19,16 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.on('order_test', () => {
             let order = [
                 {
-                    store_name: '가게1',
-                    mapx: '123',
-                    mapy: '35',
-                    detail: '당당치킨 반반 무 많이'
+                    store_name: '[맘스터치]',
+                    mapx: '126.86638445293917',
+                    mapy: '37.5008570224444',
+                    detail: '휠렛버거가 국룰이죠'
                 },
                 {
-                    store_name: '가게2',
-                    mapx: '124',
-                    mapy: '36',
-                    detail: '버거킹 스태커4 패티 4개빼고'
+                    store_name: '[이삭토스트]',
+                    mapx: '126.86663621946754',
+                    mapy: '37.50066120597915',
+                    detail: '햄치즈 토스트가 국룰이죠'
                 }
             ]
 
