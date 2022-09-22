@@ -7,6 +7,7 @@ const usersRouter = require('./api/routes/users');
 const reviewRouter = require('./api/routes/review');
 const storeRouter = require('./api/routes/store');
 const mapRouter = require('./api/routes/map');
+const myPageRouter = require('./api/routes/myPage')
 const gameRouter = require('./api/routes/game');
 const fs = require('fs');
 const path = require('path');
@@ -35,6 +36,7 @@ app.use('/store',authenticate, storeRouter);
 app.use('/review',authenticate, reviewRouter);
 app.use('/game',authenticate, gameRouter);
 app.use('/map',authenticate, mapRouter);
+app.use('/myPage',authenticate, myPageRouter);
 
 
 app.use((err, req, res, next) => {
