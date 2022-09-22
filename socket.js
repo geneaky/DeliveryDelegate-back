@@ -203,7 +203,7 @@ gameSocketNameSpace.on('connection', (socket) => {
             }
         })
 
-        //안드로이드 게임 결과 전송
+        //안드로이드 게임 결과 전송, 사용자 모두에게 ranking정보를 넘겨줘?
         socket.on('game_result', async (message) => {
             let {token, game_id} = JSON.parse(message)
 
@@ -255,6 +255,93 @@ gameSocketNameSpace.on('connection', (socket) => {
                 console.log('대표자에게: 대표자로 선정되었습니다')
             }
         });
+
+
+        /*
+        면제권 사용 이벤트
+        면제권을 사용하면 본인 면제권 -1 후 -> 예비 대표에게 "대표자가 면제권을 사용했습니다"라는 알림과
+        -> 새로운 대표자를 뽑고 주문 정보 넘겨주고
+        다른 예비 대표자들에게 "대표자가 다시 선정되었습니다" 이벤트 발생
+        현재 대표자의 ranking + 1인 예비 대표자가 다음 대표자
+        만일 다음 지정될 대표자의 랭킹이 마지막이라면 면제권 사용불가 알림 전달
+         */
+
+        socket.on('use_exemption', async(message) => {
+            let {token, room_name} = JSON.parse(message)
+
+            const user = await jwt.verify(token);
+
+            let user_model = await User.findOne({
+                user_id: user.id
+            })
+
+            let delegator_model = await Delegator.findOne({
+                user_id: user.id
+            })
+
+            if(user_model.exemption_count < 1) {
+                socket?.emit("면제권이 없습니다")
+                return;
+            }
+
+            await user_model.update({exemption_count: user_model.exemption_count - 1});
+            await user_model.save();
+
+            socket?.to(room_name).emit('use_exemption',
+            {
+                alarm: '대표자가 면제권을 사용했습니다, 새로운 대표자를 결정합니다',
+                ranking: delegator_model
+            })
+
+        })
+
+        socket.on('re_ranking', async(message) => {
+            let {token, room_name, ranking, game_id} = JSON.parse(message)
+
+            const user = await jwt.verify(token);
+
+            let delegator_size = await Delegator.findAll({
+                game_id: game_id
+            }).length
+
+            let delegator_model = await Delegator.findOne({
+                user_id : user.id
+            })
+
+            if(delegator_model.ranking === delegator_size) {
+                socket?.emit('re_ranking','마지막 주자입니다 다녀오십시오')
+                return;
+            }
+
+            if(delegator_model.ranking === Number(ranking)+1) {
+                //대표자로 결정
+                let delegators = await Delegator.findAll({
+                    where: {game_id: game_id}
+                });
+
+                let array = delegators.map(d => d?.delegator_id);
+
+                let orders = await Order.findAll({
+                    where: {
+                        delegator_id: { [Op.in] : array}
+                    }
+                });
+
+                let result = [];
+
+                for(let order of orders) {
+                    result.push({
+                        store_name: order?.store_name,
+                        mapx: order?.mapx,
+                        mapy: order?.mapy,
+                        detail: order?.detail
+                    })
+                }
+                socket?.emit('re_ranking',result)
+                return;
+            }
+            socket?.emit('re_ranking','대표자가 다시 결정되었습니다')
+        })
 
         // 대표자 탈주 -> 알림 후 -> 게임 삭제
         socket.on('delegator_run_away', async (message) => {
