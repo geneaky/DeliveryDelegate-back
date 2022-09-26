@@ -17,7 +17,7 @@ const registerUser = async (req, res, next) => {
         phone_number: req.body.phone_number,
         password: hashPassword(req.body.password),
         nickname: req.body.nickname,
-        exemption_count : 0
+        coupon_count : 0
 
     }).then(() => {
         return res.status(200).json({message : 'account created'});

@@ -204,10 +204,10 @@ const writeReview = async (req, res, next) => {
         // 면제권 제공
         if(counta.count % 10 === 0){
             await User.update({ 
-                exemption_count: Sequelize.literal('exemption_count + 1') }, 
+                coupon_count: Sequelize.literal('coupon_count + 1') }, 
                 { where: { user_id: user.id } 
             });
-            console.log("Provide exemption");
+            console.log("Provide coupon");
         }
 
         return res.status(200).json({message : 'Review registered'});

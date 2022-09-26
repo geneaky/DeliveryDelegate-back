@@ -27,7 +27,7 @@ const User = (sequelize) => sequelize.define('User',{
         type: DataTypes.STRING,
         allowNull: true
     },
-    exemption_count: {
+    coupon_count: {
         type: DataTypes.INTEGER,
         allowNull: true
     }
