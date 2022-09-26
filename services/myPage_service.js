@@ -15,10 +15,31 @@ const viewMyPage = async (req,res,next)=>{
                 user_id : user.id, 
             }
         });
-        userInfo['count'] = await countReview.count;
-    
+        userInfo.dataValues['count'] = await countReview.count;
         res.status(200).json({userInfo})
     }catch (err){
+        console.log(err)
+        return res.status(500).json({err});
+    }
+}
+
+
+/**
+ * @todo  사용자가 작성한 리뷰들 화면
+ */
+ const viewMyReviewPage = async (req,res,next)=>{
+    try{
+        const jwtToken = req.header('token');
+        const user = await jwt.verify(jwtToken);
+        console.log("(token) user id : ",user.id);
+        let reviews = await Review.findAll({ // 리뷰 개수 조회
+            where: {
+                user_id : user.id, 
+            }
+        });
+        res.status(200).json({reviews})
+    }catch (err){
+        console.log(err)
         return res.status(500).json({err});
     }
 }
@@ -53,5 +74,6 @@ const updateUserInfo = async (req,res,next)=>{
 
 module.exports = {
     viewMyPage,
-    updateUserInfo
+    updateUserInfo,
+    viewMyReviewPage
 }
