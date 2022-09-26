@@ -10,7 +10,10 @@ const Delegator = (sequelize) => sequelize.define('Delegator',{
     ranking: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        unique: true,
+    },
+    status: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 });
 

@@ -10,4 +10,8 @@ router.get('/rooms', (req, res, next) => {
    gameService.findGames(req, res, next);
 });
 
+router.get('/town/rooms', (req, res, next) => {
+    gameService.searchGames(req, res, next);
+})
+
 module.exports = router;

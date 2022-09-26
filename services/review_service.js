@@ -1,5 +1,4 @@
-const path = require('path');
-require('dotenv').config({ path: __dirname + '/develop.env' });
+const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
 const { Review,User,Store, Thumb } = require('../models');
 const Sequelize = require('sequelize');
@@ -9,7 +8,8 @@ const visionOCR = async (img) => {
     try{
     console.log("OCR");
     const client = new vision.ImageAnnotatorClient({
-        keyFilename:"./new-vision-key.json"
+        projectId: "dal2-360507",
+        keyFilename:'new-vision-key.json'
     });
     let string = '';
     const [result] = await client.textDetection(img);
@@ -23,14 +23,33 @@ const visionOCR = async (img) => {
     }
 }
 
+const addName = async (array) => {
+    for (const item of array) {   
+        let userName = await User.findOne({
+            where: {
+                user_id :  item.user_id
+                }
+            });
+        item.dataValues['user_name'] = await userName.dataValues.nickname;
+        let storeName = await Store.findOne({
+            where:{
+                store_id : item.store_id
+            }
+        });
+        item.dataValues['store_name'] = await storeName.dataValues.store_name;
+    }
+    return array;
+}
+
+
 const isBadword = async (str) =>{
     try{
         console.log("작성 내용 : ", str);
         if(str.length < 10 ){
-            return "작성 내용 10글자 이하"
+            return "too short"
         }
         else if(str.includes('시발') || str.includes('새끼') || str.includes('바보')){
-            return "금칙어 사용" 
+            return "bad word" 
         }
         else {
             return "pass"
@@ -75,11 +94,8 @@ const recieptAuth = async (req, res, next) => {
         }
         
         const type = req.file.mimetype.split('/')[1];
-        /*if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
+        if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
             return res.status(500).json({ message: "Unsupported file type"});
-        }*/
-        if (type === 'HEIC') {
-            return res.status(500).json({ message: "file type : HEIC"});
         }
         const recieptAll = await visionOCR(img.path)
         console.log("ocr result : ", recieptAll)
@@ -94,7 +110,6 @@ const recieptAuth = async (req, res, next) => {
             next(httpError(500,err.message));
         })
         
-        console.log("typeof store",typeof store);
 
         if(typeof store === "undefined" || !store){
             console.log("can't find store");
@@ -151,7 +166,21 @@ const writeReview = async (req, res, next) => {
             }
             img = req.file.path.toString()
         }
-   
+        await Store.findOne({
+            where: {
+                store_id : req.body.store_id
+                }
+            }).then((store)=>{
+                if(typeof store === "undefined" || !store){
+                    console.log("존재하지 않음 : ", store);
+                    throw new Error("can't find store")
+                    //return res.status(500).json({ message: "can't find store"})
+                } else{
+                    console.log("존재합 : ", store);
+                }
+                return;
+            });
+
         // 리뷰등록
         if (pass === "pass"){
             await Review.create({
@@ -162,7 +191,7 @@ const writeReview = async (req, res, next) => {
                 thumb_up:0
                 });
         } else {
-            return res.status(500).json({ message: `[ ${pass} ] 사유로 리뷰 등록에 실패하였습니다.`});
+            return res.status(500).json({message:pass});
         }   
  
         
@@ -184,6 +213,7 @@ const writeReview = async (req, res, next) => {
         return res.status(200).json({message : 'Review registered'});
 
     } catch(error) {
+        //console.log(error);
         res.status(500).json({ message: error.message });
     };
 };
@@ -222,7 +252,6 @@ const thumbUp = async (req,res,next) =>{
                     thumb_id : count.thumb_id
                     } 
                 });
-            
         }
         else { // 좋아요
             status = 'thumb Up';
@@ -231,9 +260,7 @@ const thumbUp = async (req,res,next) =>{
                     thumb_id : count.thumb_id
                     } 
             });
-            
         }
-    
 
         const ReviewThumbCount = await Thumb.findAndCountAll({
             where: {
@@ -256,28 +283,19 @@ const thumbUp = async (req,res,next) =>{
 };
 
 const allReview = async (req, res, next) => {
-    let thumb_count = []
-    const reviews = await Review.findAll()
+    let reviews = await Review.findAll()
     .catch((err) => {
         return next(err);
     })
-    for (let i=1; i<=reviews.length; i++){ 
-        let ReviewThumbCount = await Thumb.findAndCountAll({
-            where: {
-                review_id : i,
-                thumb_up: true
-            }
-        })
-        thumb_count.push([i,ReviewThumbCount.count]);
-        console.log(thumb_count);
+    if (reviews.length === 0){
+        return res.status(200).json({message:reviews});
+    } else {
+        const result = await addName(reviews);
+        return res.status(200).json({message:result});
     }
-    res.status(200).json({
-        message: reviews
-    });
+    
 }
 
 
 
-
-
-module.exports = {writeReview, recieptAuth, thumbUp, allReview };
+module.exports = {writeReview, recieptAuth, thumbUp, allReview, addName };

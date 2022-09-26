@@ -5,7 +5,7 @@ module.exports = {
     secretKey : process.env.secret,
     option: {
         algorithm: 'HS256',
-        expiresIn: '30m',
+        expiresIn: '7d',
         issuer: 'moon_rabbit'
     }
 }
