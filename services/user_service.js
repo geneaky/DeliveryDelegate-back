@@ -2,6 +2,7 @@ const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
 const {User} = require('../models');
 const crypto = require('crypto');
+const moment = require("moment");
 
 const registerUser = async (req, res, next) => {
 
@@ -31,13 +32,27 @@ const hashPassword = (password) => {
 }
 
 const findUser = async (req, res, next) => {
-    return await User.findOne({
+    let user = await User.findOne({
         where: {
             phone_number: req.body.phone_number,
             password: hashPassword(req.body.password)}
     }).catch((err) => {
         return next(err);
     });
+
+    if (user.penalty) {
+        if(moment().isAfter(user.penalty_date)){
+            user.penalty = false;
+            await user.save();
+            return user;
+        }else{
+            return res.json({
+                message: '패널티를 받은 사용자는 일정시간 사용불가 합니다'
+            })
+        }
+    }else{
+        return user;
+    }
 }
 
 

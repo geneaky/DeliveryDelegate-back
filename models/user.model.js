@@ -30,6 +30,14 @@ const User = (sequelize) => sequelize.define('User',{
     coupon_count: {
         type: DataTypes.INTEGER,
         allowNull: true
+    },
+    penalty: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    penalty_date: {
+        type: DataTypes.DATE,
+        allowNull: true
     }
 });
 
