@@ -40,8 +40,10 @@ const findUser = async (req, res, next) => {
         return next(err);
     });
 
-    if (user.penalty) {
-        if(moment().isAfter(user.penalty_date)){
+    console.log(user);
+
+    if (user?.penalty) {
+        if(moment().isAfter(user?.penalty_date)){
             user.penalty = false;
             await user.save();
             return user;
