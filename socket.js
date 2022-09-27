@@ -115,6 +115,42 @@ gameSocketNameSpace.on('connection', (socket) => {
             console.log('check_ready 동작');
         })
 
+        //참여자 목록
+        socket.on('delegator_list', async(message) => {
+            let {token, room_name} = JSON.parse(message)
+
+            const user = await jwt.verify(token);
+
+            let delegator = await Delegator.findOne({
+                wherer: {user_id: user.id}
+            }).catch((err) => {
+                console.log(err);
+            })
+
+            let delegators = await Delegator.findAll({
+                where: {game_id: delegator.game_id}
+            }).catch((err) => {
+                console.log(err);
+            })
+
+            let array = delegators.map(d => d?.user_id);
+
+            let users = await User.findAll({
+                where: {
+                    delegator_id: { [Op.in] : array}
+                }
+            });
+
+            let result = [];
+
+            for(let user of users) {
+                result.push(user.nickname)
+            }
+
+            socket?.emit('delegator_list', result);
+            console.log('delegator_list 동작')
+        })
+
         //게임 시작
         socket.on('on_game', async(message) => {
             let {token, room_name} = JSON.parse(message)
