@@ -143,7 +143,7 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             let users = await User.findAll({
                 where: {
-                    delegator_id: {[Op.in]: array}
+                    user_id: {[Op.in]: array}
                 }
             });
 
