@@ -223,6 +223,7 @@ gameSocketNameSpace.on('connection', (socket) => {
                 })
 
                 socket?.to(room_name).emit('quit_game', '방이 폭파되었습니다')
+                socket?.emit('quit_game', '방이 폭파되었습니다')
                 socket?.disconnect()
             } else { //예비 대표자가 나가면 해당 예비 대표 이름만 전달
                 await Delegator.destroy({
