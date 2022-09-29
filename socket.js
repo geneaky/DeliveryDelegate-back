@@ -331,10 +331,10 @@ gameSocketNameSpace.on('connection', (socket) => {
 
 
         //대표자 랜드마크 도착 -> 안드로이드에서 대표자가 랜드마크에 도착하면 해당 이벤트를 참여자들에게 알림
-        socket.on('delegator_arrive', (message) => {
+        socket.on('arrive', (message) => {
             let {room_name} = JSON.parse(message)
-            socket?.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
-            socket?.emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
+            socket?.to(room_name).emit('arrive', '대표자가 랜드마크에 도착했습니다');
+            socket?.emit('arrive', '대표자가 랜드마크에 도착했습니다');
             console.log('대표자 랜드마크 도작 이벤트 동작')
         });
 
