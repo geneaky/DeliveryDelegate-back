@@ -10,7 +10,6 @@ const createGame = async (req, res, next) => {
     const room_name = v4();
 
     const game = await Game.create({
-        game_type: req.body.game_type,
         game_name: req.body.game_name,
         game_main_text: req.body?.game_main_text,
         population: req.body.population,

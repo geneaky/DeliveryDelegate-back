@@ -14,7 +14,7 @@ const gameSocketNameSpace = io.of('/games');
 
 gameSocketNameSpace.on('connection', (socket) => {
 
-    try{
+    try {
         //게임 방장 생성 후 참가
         socket.on('attendMaster', async (message) => {
             let {room_name} = JSON.parse(message);
@@ -35,6 +35,12 @@ gameSocketNameSpace.on('connection', (socket) => {
                 socket?.emit('population', '인원 초과');
                 return;
             }
+
+            const user_model = await User.findOne({
+                where: {user_id: user.id}
+            }).catch((err) => {
+                console.log(err);
+            })
             const delegator = await Delegator.create({
                 game_id: game_id,
                 user_id: user.id
@@ -55,12 +61,12 @@ gameSocketNameSpace.on('connection', (socket) => {
             });
 
             socket?.join(room_name);
-            socket?.to(room_name).emit('attend', socket.id + '입장');
+            socket?.to(room_name).emit('attend', user_model.nickname + '입장');
             console.log('attend 동작');
         });
 
         //게임 준비
-        socket.on('ready_game', async(message) => {
+        socket.on('ready_game', async (message) => {
             let {token, nickname, room_name} = JSON.parse(message)
 
             const user = await jwt.verify(token);
@@ -68,10 +74,10 @@ gameSocketNameSpace.on('connection', (socket) => {
             //게임 참석한 대표자들의 상태를 게임 준비상태로 update
             await Delegator.update({
                 status: true
-            },{
-              where: {
+            }, {
+                where: {
                     user_id: user.id
-              }
+                }
             }).catch(err => {
                 console.log(err);
             })
@@ -83,13 +89,13 @@ gameSocketNameSpace.on('connection', (socket) => {
         })
 
         //게임 시작전 방장을 제외한 모든 대표자들이 ready했는지 방장이 확인
-        socket.on('check_ready', async(message) => {
+        socket.on('check_ready', async (message) => {
             let {token, nickname, room_name} = JSON.parse(message)
 
             const user = await jwt.verify(token);
 
             let daepyo = await Delegator.findOne({
-                where: {user_id : user.id}
+                where: {user_id: user.id}
             });
 
             //대표가 아닐 경우 분기 처리
@@ -99,13 +105,13 @@ gameSocketNameSpace.on('connection', (socket) => {
             }
 
             let attenderList = await Delegator.findAll({
-                where: {game_id : daepyo.game_id}
+                where: {game_id: daepyo.game_id}
             }).catch((err) => {
                 console.log(err);
             })
 
-            for(let idx in attenderList) {
-                if(attenderList[idx].ranking !==1 && attenderList[idx].status === false) {
+            for (let idx in attenderList) {
+                if (attenderList[idx].ranking !== 1 && attenderList[idx].status === false) {
                     socket?.to(room_name).emit('check_ready', 'not_ready')
                     socket?.emit('check_ready', 'not_ready')
                     return;
@@ -116,13 +122,13 @@ gameSocketNameSpace.on('connection', (socket) => {
         })
 
         //참여자 목록
-        socket.on('delegator_list', async(message) => {
+        socket.on('delegator_list', async (message) => {
             let {token, room_name} = JSON.parse(message)
 
             const user = await jwt.verify(token);
 
             let delegator = await Delegator.findOne({
-                wherer: {user_id: user.id}
+                where: {user_id: user.id}
             }).catch((err) => {
                 console.log(err);
             })
@@ -137,13 +143,13 @@ gameSocketNameSpace.on('connection', (socket) => {
 
             let users = await User.findAll({
                 where: {
-                    delegator_id: { [Op.in] : array}
+                    delegator_id: {[Op.in]: array}
                 }
             });
 
             let result = [];
 
-            for(let user of users) {
+            for (let user of users) {
                 result.push(user.nickname)
             }
 
@@ -152,7 +158,7 @@ gameSocketNameSpace.on('connection', (socket) => {
         })
 
         //게임 시작
-        socket.on('on_game', async(message) => {
+        socket.on('on_game', async (message) => {
             let {token, room_name} = JSON.parse(message)
 
             const user = await jwt.verify(token);
@@ -164,20 +170,20 @@ gameSocketNameSpace.on('connection', (socket) => {
             })
 
             let attenderList = await Delegator.findAll({
-                where: { game_id : daeypo.game_id}
+                where: {game_id: daeypo.game_id}
             }).catch((err) => {
                 console.log(err);
             })
 
-            for(let i = 0; i < 5; i++) {
+            for (let i = 0; i < 5; i++) {
                 attenderList.sort(() => Math.random() - 0.5);
             }
 
-            for(let idx in attenderList) {
+            for (let idx in attenderList) {
                 await Delegator.update({
-                        ranking: Number(idx)+1,
+                        ranking: Number(idx) + 1,
                         status: true
-                    },{
+                    }, {
                         where: {delegator_id: attenderList[idx].delegator_id}
                     }
                 ).catch((err) => {
@@ -186,12 +192,12 @@ gameSocketNameSpace.on('connection', (socket) => {
             }
             //랜덤 배치 끝 -> 이후 안드로이드에서 게임 결과 요청
             socket?.to(room_name).emit('on_game', 'game_end')
-            socket?.emit('on_game','game_end')
+            socket?.emit('on_game', 'game_end')
             console.log('on_game 동작');
         })
 
         //ranking 1이 나가면 게임, delegator, order 다 삭제
-        socket.on('quit_game', async(message) => {
+        socket.on('quit_game', async (message) => {
             let {token, nickname, room_name} = JSON.parse(message)
 
             const user = await jwt.verify(token);
@@ -200,10 +206,12 @@ gameSocketNameSpace.on('connection', (socket) => {
                 where: {user_id: user.id}
             })
 
+            console.log(delegator);
+
             //방장이 나가면 게임 삭제, 관련된 예비 대표들도 다 삭제
-            if(delegator?.ranking === 1) {
+            if (delegator?.ranking == 1) {
                 await Delegator.destroy({
-                    where: { game_id : delegator.game_id}
+                    where: {game_id: delegator.game_id}
                 }).catch((err) => {
                     console.log(err);
                 });
@@ -239,36 +247,36 @@ gameSocketNameSpace.on('connection', (socket) => {
                 where: {user_id: user.id}
             });
 
-            if(delegator.ranking !== 1) {
+            if (delegator.ranking !== 1) {
                 socket?.emit('game_result', '대표자가 선정되었습니다')
                 console.log('예비대표자들에게 : 대표자가 선정되었습니다');
                 return;
 
-            }else{
+            } else {
 
                 console.log(game_id);
-                console.log(typeof  game_id);
+                console.log(typeof game_id);
                 let delegators = await Delegator.findAll({
                     where: {game_id: game_id}
                 });
 
-                console.log('test1::'+delegators)
+                console.log('test1::' + delegators)
 
                 let array = delegators.map(d => d?.delegator_id);
 
-                console.log('test2::'+array)
+                console.log('test2::' + array)
 
                 let orders = await Order.findAll({
                     where: {
-                        delegator_id: { [Op.in] : array}
+                        delegator_id: {[Op.in]: array}
                     }
                 });
 
-                console.log('test3::'+ orders)
+                console.log('test3::' + orders)
 
                 let result = [];
 
-                for(let order of orders) {
+                for (let order of orders) {
                     result.push({
                         store_name: order?.store_name,
                         mapx: order?.mapx,
@@ -292,20 +300,20 @@ gameSocketNameSpace.on('connection', (socket) => {
             });
 
             userModel.penalty = true;
-            userModel.penalty_date = moment().add(30,'days').toDate();
+            userModel.penalty_date = moment().add(30, 'days').toDate();
 
             await userModel.save();
 
             let delegator = await Delegator.findOne({
-                where : {user_id: user.id}
+                where: {user_id: user.id}
             });
 
-            if(delegator.ranking !== 1) {
+            if (delegator.ranking !== 1) {
                 return;
             }
 
             await Delegator.destroy({
-                where: { game_id : delegator.game_id}
+                where: {game_id: delegator.game_id}
             }).catch((err) => {
                 console.log(err);
             });
@@ -328,46 +336,10 @@ gameSocketNameSpace.on('connection', (socket) => {
             console.log('대표자 랜드마크 도작 이벤트 동작')
         });
 
-        //게임 종료
-        socket.on('game_end', (socket) => {
-            socket?.disconnect();
-            console.log('game_end 동작')
-        });
-
-        //게임 종료 후 게임 삭제 (대표자가 삭제) --> 게임 생성하자마자 삭제하는 경우도 있음
-        socket.on('game_remove', async (message) => {
-            let {room_name, ranking} = JSON.parse(message)
-            if (ranking === 1) {
-                await Delegator.destroy({
-                    include: [
-                        {
-                            model: Game,
-                            where: {socket_room_name: room_name}
-                        }],
-                    where: {game_id: Game.game_id}
-                }).catch((err) => {
-                    console.log(err);
-                });
-
-                await Game.destroy({
-                    where: {socket_room_name: room_name}
-                }).catch((err) => {
-                    console.log(err);
-                })
-
-                console.log('대표자가 게임 삭제')
-            }
-
-            socket?.disconnect();
-        });
-
-        socket.on('disconnect', (socket) => {
-            console.log('bi');
-        });
-    } catch (e) {
-        socket.emit('error', {status: 400, message: 'Bad Request'})
+    } catch (err) {
+        console.log(err);
     }
-});
+})
 
 httpServer.listen(8080,() => {
     const dir1 = './ocr_uploads';
