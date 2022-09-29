@@ -334,6 +334,7 @@ gameSocketNameSpace.on('connection', (socket) => {
         socket.on('delegator_arrive', (message) => {
             let {room_name} = JSON.parse(message)
             socket?.to(room_name).emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
+            socket?.emit('delegator_arrive', '대표자가 랜드마크에 도착했습니다');
             console.log('대표자 랜드마크 도작 이벤트 동작')
         });
 
