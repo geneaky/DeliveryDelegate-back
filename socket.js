@@ -15,6 +15,15 @@ const gameSocketNameSpace = io.of('/games');
 gameSocketNameSpace.on('connection', (socket) => {
 
     try {
+
+        socket.on('last_attend', (message) => {
+            let {room_name} = JSON.parse(message);
+
+            console.log('동작1');
+            socket.join(room_name);
+            console.log('동작2');
+        })
+
         //게임 방장 생성 후 참가
         socket.on('attendMaster', async (message) => {
             let {room_name} = JSON.parse(message);
