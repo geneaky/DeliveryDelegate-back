@@ -127,6 +127,7 @@ gameSocketNameSpace.on('connection', (socket) => {
                 }
             }
             socket?.emit('check_ready', 'complete_ready')
+            socket?.to(room_name).emit('check_ready', 'complete_ready')
             console.log('check_ready 동작');
         })
 
