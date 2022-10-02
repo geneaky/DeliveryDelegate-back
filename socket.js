@@ -16,12 +16,24 @@ gameSocketNameSpace.on('connection', (socket) => {
 
     try {
 
-        socket.on('last_attend', (message) => {
-            let {room_name} = JSON.parse(message);
+        socket.on('last_attend', async (message) => {
+            let {room_name, token} = JSON.parse(message);
 
-            console.log('동작1');
-            socket.join(room_name);
-            console.log('동작2');
+            const user = await jwt.verify(token);
+
+            let delegator = await Delegator.findOne({
+                where: {user_id: user?.id}
+            });
+
+            let game = await Game.findOne({
+                where: {game_id: delegator?.game_id}
+            }).catch((err) => {
+                console.log(err);
+            })
+
+            if(game?.socket_room_name == room_name) {
+                socket.join(room_name);
+            }
         })
 
         //게임 방장 생성 후 참가
