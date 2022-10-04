@@ -41,8 +41,6 @@ const findUser = async (req, res, next) => {
         return next(err);
     });
 
-    console.log(user);
-
     if (user?.penalty) {
         if(moment().isAfter(user?.penalty_date)){
             user.penalty = false;
