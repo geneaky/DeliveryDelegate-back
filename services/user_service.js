@@ -49,7 +49,7 @@ const findUser = async (req, res, next) => {
             await user.save();
             return user;
         }else{
-            return res.json({
+            return res.status(401).json({
                 message: '패널티를 받은 사용자는 일정시간 사용불가 합니다'
             })
         }
