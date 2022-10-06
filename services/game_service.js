@@ -65,27 +65,43 @@ const searchGames = async (req, res, next) => {
         user_id: user.id
     });
 
-    //내 주위 반경 1km로 검색 default
-    const long = 0.0113 //경도 1km x
-    const latt = 0.0091 // 위도 1km y
+    let posx = userModel.self_posx;
+    let posy = userModel.self_posy;
 
-    let min_x = Number(userModel.self_posx) - long;
-    let max_x = Number(userModel.self_posx) + long;
+    function getDistance(lat1, lon1, lat2, lon2) {
+        if ((lat1 == lat2) && (lon1 == lon2))
+            return 0;
 
-    let min_y = Number(userModel.self_posy) - latt;
-    let max_y = Number(userModel.self_posy) + latt;
+        let radLat1 = Math.PI * lat1 / 180;
+        let radLat2 = Math.PI * lat2 / 180;
+        let theta = lon1 - lon2;
+        let radTheta = Math.PI * theta / 180;
+        let dist = Math.sin(radLat1) * Math.sin(radLat2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.cos(radTheta);
+        if (dist > 1)
+            dist = 1;
 
-    const games = await Game.findAll({
-        where: {
-            landmark_posx: { [Op.between] : [min_x, max_x]},
-            landmark_posy: { [Op.between] : [min_y, max_y]}
-        }
-    }).catch((err) => {
+        dist = Math.acos(dist);
+        dist = dist * 180 / Math.PI;
+        dist = dist * 60 * 1.1515 * 1.609344 * 1000;
+        if (dist < 100) dist = Math.round(dist / 10) * 10;
+        else dist = Math.round(dist / 100) * 100;
+
+        return dist;
+    }
+
+    const games = await Game.findAll().catch((err) => {
         console.log(err)
     })
 
+    let result = games.filter((g) => {
+        if(getDistance(posx,posy, g?.landmark_posx, g?.landmark_posy) <= 500) {
+            return true;
+        }
+        return false;
+    });
+
     res.status(200).json({
-        games: games
+        games: result
     })
 
 }
