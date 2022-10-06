@@ -94,7 +94,7 @@ const searchGames = async (req, res, next) => {
     })
 
     let result = games.filter((g) => {
-        if(getDistance(posx,posy, g?.landmark_posx, g?.landmark_posy) <= 500) {
+        if(getDistance(Number(posx),Number(posy), Number(g?.landmark_posx), Number(g?.landmark_posy)) <= 500) {
             return true;
         }
         return false;
