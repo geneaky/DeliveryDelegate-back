@@ -68,6 +68,11 @@ const searchGames = async (req, res, next) => {
     let posx = userModel.self_posx;
     let posy = userModel.self_posy;
 
+    if(posx == null || posy == null) {
+        res.status(400).json({ message: '동네 설정을 해주세요'});
+        return;
+    }
+
     function getDistance(lat1, lon1, lat2, lon2) {
         if ((lat1 == lat2) && (lon1 == lon2))
             return 0;
