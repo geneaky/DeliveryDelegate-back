@@ -68,7 +68,7 @@ const searchGames = async (req, res, next) => {
     let posx = userModel.self_posx;
     let posy = userModel.self_posy;
 
-    if(posx == null || posy == null) {
+    if(!posx || !posy) {
         res.status(400).json({ message: '동네 설정을 해주세요'});
         return;
     }
