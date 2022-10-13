@@ -26,6 +26,10 @@ router.post('/post', review_upload.single('file'), async function(req, res, next
     reviewService.writeReview(req, res, next);
 });
 
+router.post('/remove/:id', async function(req, res, next) {
+  reviewService.deleteReview(req, res, next);
+});
+
 router.get('/list', function(req, res, next) { 
   reviewService.allReview(req, res, next);
 });
