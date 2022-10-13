@@ -283,7 +283,7 @@ const thumbUp = async (req,res,next) =>{
 };
 
 const allReview = async (req, res, next) => {
-    let reviews = await Review.findAll()
+    let reviews = await Review.findAll({order: [['createdAt', 'DESC']], })
     .catch((err) => {
         return next(err);
     })
