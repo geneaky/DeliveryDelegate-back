@@ -3,6 +3,7 @@ const jwt = require('../api/middlewares/jwt');
 const { Review,User,Store, Thumb } = require('../models');
 const Sequelize = require('sequelize');
 const vision = require('@google-cloud/vision');
+const fs = require('fs')
 
 const visionOCR = async (img) => {
     try{
@@ -296,6 +297,36 @@ const allReview = async (req, res, next) => {
     
 }
 
+const deleteReview = async (req, res, next) => {
+    const reviewId = req.params.id
+    let re = await Review.findOne({
+        where: {
+            review_id: reviewId
+        }
+    }).catch((err) => {
+        return next(err);
+    });
 
 
-module.exports = {writeReview, recieptAuth, thumbUp, allReview, addName };
+    if (!re.dataValues.image_path){
+       console.log("삭제할 이미지가 존재하지 않습니다.")
+    } else {
+        try {
+            fs.unlinkSync(re.dataValues.image_path)
+        }catch(err) {
+         console.error(err)
+        }
+    }
+    
+    await Review.destroy({ where: {
+        review_id: reviewId
+    }})
+    .catch((err) => {
+        return next(err);
+    });
+    return res.status(200).json({message:"goooood"});
+}
+
+
+
+module.exports = {writeReview, recieptAuth, thumbUp, allReview, addName,deleteReview };
