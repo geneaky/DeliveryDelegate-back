@@ -61,12 +61,12 @@ const searchGames = async (req, res, next) => {
 
     const user = await jwt.verify(req.header('token'));
 
-    let userModel = await User.findOne({
+    const userModel = await User.findOne({
         user_id: user.id
     });
 
-    const posx = userModel.self_posx;
-    const posy = userModel.self_posy;
+    let posx = userModel.self_posx;
+    let posy = userModel.self_posy;
 
     if(!userModel.self_posx || !userModel.self_posy) {
         res.status(400).json({ message: '동네 설정을 해주세요'});
