@@ -62,7 +62,9 @@ const searchGames = async (req, res, next) => {
     const user = await jwt.verify(req.header('token'));
 
     const userModel = await User.findOne({
-        user_id: user.id
+        where: {
+            user_id: user.id
+        }
     });
 
     console.log("==============check===============")
