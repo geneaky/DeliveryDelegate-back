@@ -65,6 +65,8 @@ const searchGames = async (req, res, next) => {
         user_id: user.id
     });
 
+    console.log("==============check===============")
+    console.log(userModel);
     let posx = userModel.self_posx;
     let posy = userModel.self_posy;
 
