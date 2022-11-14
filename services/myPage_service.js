@@ -1,5 +1,6 @@
 const jwt = require('../api/middlewares/jwt');
 const { User, Review } = require("../models")
+const reviewService = require("./review_service")
 
 /**
  * @todo  개인정보 화면
@@ -32,12 +33,15 @@ const viewMyPage = async (req,res,next)=>{
         const jwtToken = req.header('token');
         const user = await jwt.verify(jwtToken);
         console.log("(token) user id : ",user.id);
-        let reviews = await Review.findAll({ // 리뷰 개수 조회
+        let re = await Review.findAll({
             where: {
                 user_id : user.id, 
             }
         });
-        res.status(200).json({reviews})
+        console.log(re)
+        const reviews = await reviewService.addName(re)
+        console.log(reviews)
+        res.status(200).json({message:reviews})
     }catch (err){
         console.log(err)
         return res.status(500).json({err});
