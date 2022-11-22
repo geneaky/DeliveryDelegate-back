@@ -24,8 +24,16 @@ const visionOCR = async (img) => {
     }
 }
 
-const addName = async (array) => {
-    for (const item of array) {   
+const addName = async (array, realUser) => {
+    for (const item of array) { 
+        if (realUser){
+            let isLiked = await findThumb(realUser, item.review_id)
+            if (!isLiked || typeof isLiked === 'undefined'){
+                item.dataValues["is_Liked"] = false
+            } else{
+                item.dataValues["is_Liked"] = isLiked.dataValues.thumb_up
+            }
+        }   
         let userName = await User.findOne({
             where: {
                 user_id :  item.user_id
@@ -70,14 +78,7 @@ const findThumb = async (userId, reviewId) => {
     .catch((err) => {
         return err
     });
-
-    if(!nowUserThumb){
-        console.log("NULL")
-        return nowUserThumb;
-   } else{
-       console.log("(함수) nowUserThumb", nowUserThumb.dataValues)
-       return nowUserThumb.dataValues;
-   }
+    return nowUserThumb;
 }
 
 
@@ -291,7 +292,7 @@ const allReview = async (req, res, next) => {
     if (reviews.length === 0){
         return res.status(200).json({message:reviews});
     } else {
-        const result = await addName(reviews);
+        const result = await addName(fil_reviews, realUser.id);
         return res.status(200).json({message:result});
     }
     
