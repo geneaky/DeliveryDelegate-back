@@ -50,6 +50,27 @@ const addName = async (array, realUser) => {
     return array;
 }
 
+const getDistance = (lat1, lon1, lat2, lon2)=>{
+    if ((lat1 == lat2) && (lon1 == lon2))
+        return 0;
+
+    let radLat1 = Math.PI * lat1 / 180;
+    let radLat2 = Math.PI * lat2 / 180;
+    let theta = lon1 - lon2;
+    let radTheta = Math.PI * theta / 180;
+    let dist = Math.sin(radLat1) * Math.sin(radLat2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.cos(radTheta);
+    if (dist > 1)
+        dist = 1;
+
+    dist = Math.acos(dist);
+    dist = dist * 180 / Math.PI;
+    dist = dist * 60 * 1.1515 * 1.609344 * 1000;
+    if (dist < 100) dist = Math.round(dist / 10) * 10;
+    else dist = Math.round(dist / 100) * 100;
+
+    console.log("dist : ",dist)
+    return dist;
+}
 
 const isBadword = async (str) =>{
     try{
@@ -160,7 +181,6 @@ const writeReview = async (req, res, next) => {
         let pass = await isBadword(req.body.body) 
         if (typeof img == "undefined") { 
             img = "";
-            console.log(img);
         } else {
             const type = req.file.mimetype.split('/')[1];
             if (type !== 'jpeg' && type !== 'jpg' && type !== 'png') {
@@ -285,12 +305,48 @@ const thumbUp = async (req,res,next) =>{
 };
 
 const allReview = async (req, res, next) => {
+    const jwtToken = req.header('token');
+    const realUser = await jwt.verify(jwtToken); 
+    const userInfo = await User.findOne({
+        where: {
+            user_id: realUser.id
+        }
+    });
+    let posx = userInfo.self_posx;
+    let posy = userInfo.self_posy;
+
+    if(!posx || !posy) {
+        res.status(400).json({ message: '동네 설정을 해주세요'});
+        return;
+    }
+
+
     let reviews = await Review.findAll({order: [['createdAt', 'DESC']], })
     .catch((err) => {
         return next(err);
     })
-    if (reviews.length === 0){
-        return res.status(200).json({message:reviews});
+    const promises = await reviews.map(async (review) => {
+        let storeInfo = await Store.findOne({
+            where: {
+                store_id: review.dataValues.store_id
+            }
+        });
+        return storeInfo
+    })
+
+    const storeInfo = await Promise.all(promises)
+
+    let fil_reviews = reviews.filter((g, index)=>{
+        let dist =  getDistance(Number(posx),Number(posy), Number(storeInfo[index].dataValues.store_posx), Number(storeInfo[index].dataValues.store_posy))
+        if(dist <= 3000) {
+            return true;
+        } else{
+            return false;
+        }
+    })
+
+    if (fil_reviews.length === 0){
+        return res.status(200).json({message:fil_reviews});
     } else {
         const result = await addName(fil_reviews, realUser.id);
         return res.status(200).json({message:result});
