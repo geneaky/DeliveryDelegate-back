@@ -30,6 +30,7 @@ const registerStore = async (req, res, next) => {
     geo.init("katec", "geo");
     var pt = new geoTrans.Point(parseInt(req.body.store_posx), parseInt(req.body.store_posy));
     var out_pt = geo.conv(pt);
+    console.log(out_pt.x, out_pt.y)
     await Store.create({
         store_name: req.body.store_name,
         store_posx: out_pt.x,

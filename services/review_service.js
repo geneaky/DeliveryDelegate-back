@@ -198,7 +198,7 @@ const writeReview = async (req, res, next) => {
                     throw new Error("can't find store")
                     //return res.status(500).json({ message: "can't find store"})
                 } else{
-                    console.log("존재합 : ", store);
+                    console.log("존재합 : ", store.dataValues.store_id);
                 }
                 return;
             });
@@ -345,10 +345,10 @@ const allReview = async (req, res, next) => {
         }
     })
 
-    if (fil_reviews.length === 0){
-        return res.status(200).json({message:fil_reviews});
+    if (reviews.length === 0){
+        return res.status(200).json({message:reviews});
     } else {
-        const result = await addName(fil_reviews, realUser.id);
+        const result = await addName(reviews, realUser.id);
         return res.status(200).json({message:result});
     }
     
