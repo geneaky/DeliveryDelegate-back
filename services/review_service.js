@@ -9,8 +9,8 @@ const visionOCR = async (img) => {
     try{
     console.log("OCR");
     const client = new vision.ImageAnnotatorClient({
-        projectId: "dal2-360507",
-        keyFilename:'new-vision-key.json'
+        projectId: "steady-orb-369411",
+        keyFilename:'new-vision-key.json' // 22.11.22 재발급
     });
     let string = '';
     const [result] = await client.textDetection(img);
