@@ -345,10 +345,10 @@ const allReview = async (req, res, next) => {
         }
     })
 
-    if (reviews.length === 0){
-        return res.status(200).json({message:reviews});
+    if (fil_reviews.length === 0){
+        return res.status(200).json({message:fil_reviews});
     } else {
-        const result = await addName(reviews, realUser.id);
+        const result = await addName(fil_reviews, realUser.id);
         return res.status(200).json({message:result});
     }
     
