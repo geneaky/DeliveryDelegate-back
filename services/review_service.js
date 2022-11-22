@@ -277,7 +277,7 @@ const thumbUp = async (req,res,next) =>{
                 } 
         });
     
-         return res.status(200).json({message : `${ReviewThumbCount.count}, ${status}`});
+         return res.status(200).json({message : `${ReviewThumbCount.count}`, status: `${status}`});
     } catch(error){
         res.status(500).json({ message: error.message })
     }
