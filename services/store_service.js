@@ -2,13 +2,19 @@ const httpError = require('http-errors');
 const jwt = require('../api/middlewares/jwt');
 const {Store, Review} = require('../models');
 const review = require('./review_service');
+const geoTrans = require("./geoTrans")
 
 const findStore = async (req, res, next) => {
+    var geo = new geoTrans.GeoTrans();
+    geo.init("katec", "geo");
+    var pt = new geoTrans.Point(parseInt(req.query.store_posx), parseInt(req.query.store_posy));  
+    var out_pt = geo.conv(pt);
     await Store.findOne({
         where: {
             store_name: req.query.store_name,
-            store_posx: req.query.store_posx,
-            store_posy: req.query.store_posy}
+            store_posx: out_pt.x,
+            store_posy: out_pt.y
+        }
     }).then((store) => {
         if(store) {
             return res.status(200).json({ store_id: store.store_id, message: "store existed"});
@@ -20,10 +26,14 @@ const findStore = async (req, res, next) => {
 }
 
 const registerStore = async (req, res, next) => {
+    var geo = new geoTrans.GeoTrans();
+    geo.init("katec", "geo");
+    var pt = new geoTrans.Point(parseInt(req.body.store_posx), parseInt(req.body.store_posy));
+    var out_pt = geo.conv(pt);
     await Store.create({
         store_name: req.body.store_name,
-        store_posx: req.body.store_posx,
-        store_posy: req.body.store_posy,
+        store_posx: out_pt.x,
+        store_posy: out_pt.y,
         store_address: req.body.store_address
     }).then((store) => {
         return res.status(200).json({ store_id : store.store_id });
