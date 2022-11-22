@@ -1,46 +1,55 @@
 const httpError = require('http-errors');
-const jwt = require('../api/middlewares/jwt');
+const axios = require('axios');
 const {Store, Review} = require('../models');
 const review = require('./review_service');
-const geoTrans = require("./geoTrans")
+require('dotenv').config();
+
+const kakaoMap = axios.create({
+    baseURL : "https://dapi.kakao.com/v2/local/geo",
+    headers : {
+        'Authorization' : `KakaoAK ${process.env.KAKAO_REST_API_KEY}`
+    }
+});
+
 
 const findStore = async (req, res, next) => {
-    var geo = new geoTrans.GeoTrans();
-    geo.init("katec", "geo");
-    var pt = new geoTrans.Point(parseInt(req.query.store_posx), parseInt(req.query.store_posy));  
-    var out_pt = geo.conv(pt);
-    await Store.findOne({
-        where: {
-            store_name: req.query.store_name,
-            store_posx: out_pt.x,
-            store_posy: out_pt.y
-        }
-    }).then((store) => {
-        if(store) {
-            return res.status(200).json({ store_id: store.store_id, message: "store existed"});
-        }
-        return res.status(404).json({ store_id: "null" ,message: "store not existed"});
-    }).catch((err) => {
-        next(httpError(500, err.message));
+    await kakaoMap.get(`transcoord.json?x=${req.query.store_posx}&y=${req.query.store_posy}&input_coord=KTM&output_coord=WGS84`)
+    .then(async (result)=>{
+        const [geo] = result.data.documents
+
+        await Store.findOne({
+            where: {
+                store_name: req.query.store_name,
+                store_posx: geo.x,
+                store_posy: geo.y,
+            }
+        }).then((store) => {
+            if(store) {
+                return res.status(200).json({ store_id: store.store_id, message: "store existed"});
+            }
+            return res.status(404).json({ store_id: "null" ,message: "store not existed"});
+        }).catch((err) => {
+            next(httpError(500, err.message));
+        })
     })
 }
 
 const registerStore = async (req, res, next) => {
-    var geo = new geoTrans.GeoTrans();
-    geo.init("katec", "geo");
-    var pt = new geoTrans.Point(parseInt(req.body.store_posx), parseInt(req.body.store_posy));
-    var out_pt = geo.conv(pt);
-    console.log(out_pt.x, out_pt.y)
-    await Store.create({
-        store_name: req.body.store_name,
-        store_posx: out_pt.x,
-        store_posy: out_pt.y,
-        store_address: req.body.store_address
-    }).then((store) => {
-        return res.status(200).json({ store_id : store.store_id });
-    }).catch((err) => {
-        next(httpError(500,err.message));
-    });
+    await kakaoMap.get(`transcoord.json?x=${req.body.store_posx}&y=${req.body.store_posy}&input_coord=KTM&output_coord=WGS84`)
+        .then(async (result)=>{
+            const [geo] = result.data.documents   
+            
+            await Store.create({
+                store_name: req.body.store_name,
+                store_posx: geo.x,
+                store_posy: geo.y,
+                store_address: req.body.store_address
+            }).then((store) => {
+                return res.status(200).json({ store_id : store.store_id });
+            }).catch((err) => {
+                next(httpError(500,err.message));
+            });
+        })
 };
 
 const getReviews = async (req, res, next) => {
